@@ -1,0 +1,10 @@
+certifi==2020.6.20
+future==0.18.2
+mkl-fft==1.1.0
+mkl-random==1.1.1
+mkl-service==2.3.0
+numpy @ file:///tmp/build/80754af9/numpy_and_numpy_base_1596233721170/work
+Pillow==7.2.0
+six==1.15.0
+torch==1.6.0
+torchvision==0.7.0
