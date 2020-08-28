@@ -1,7 +1,7 @@
 
 ##### Check all systems GO !!!
 
-"""
+```
 (pytorch_venv) dhankar@dhankar-1:~/temp/pytorch/PyTorch_1$ python
 Python 3.8.5 (default, Aug  5 2020, 08:36:46) 
 [GCC 7.3.0] :: Anaconda, Inc. on linux
@@ -20,7 +20,7 @@ tensor([[0.1965, 0.8001, 0.6781],
 >>> torch.cuda.is_available()
 True
 >>> 
-"""
+```
 
 #
 
