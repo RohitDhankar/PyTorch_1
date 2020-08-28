@@ -30,7 +30,7 @@ Downloading: "https://download.pytorch.org/models/resnet101-5d3b4d8f.pth" to /ho
 100.0%
 """
 #
-print(resnet)
+#print(resnet)
 #
 """
 ResNet(
@@ -364,3 +364,81 @@ ResNet(
 )
 """
 #
+from torchvision import transforms
+preprocess = transforms.Compose([
+        transforms.Resize(256),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        transforms.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225]
+        )])
+#print(type(preprocess))    #<class 'torchvision.transforms.transforms.Compose'>    
+#
+from PIL import Image
+#img = Image.open("box.png")
+#print(type(img)) #<class 'PIL.PngImagePlugin.PngImageFile'>
+"""
+####RuntimeError: output with shape [1, 224, 224] doesn't match the broadcast shape [3, 224, 224]
+
+### GreyScale Image ?? 
+Traceback (most recent call last):
+  File "1_preTrn.py", line 381, in <module>
+    img_t = preprocess(img)
+  File "/home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages/torchvision/transforms/transforms.py", line 61, in __call__
+    img = t(img)
+  File "/home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages/torchvision/transforms/transforms.py", line 212, in __call__
+    return F.normalize(tensor, self.mean, self.std, self.inplace)
+  File "/home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages/torchvision/transforms/functional.py", line 298, in normalize
+    tensor.sub_(mean).div_(std)
+RuntimeError: output with shape [1, 224, 224] doesn't match the broadcast shape [3, 224, 224]
+"""
+#spacenet
+# img = Image.open("spacenet.png")
+# img_t = preprocess(img)
+# print(type(img_t)) 
+"""
+Traceback (most recent call last):
+  File "1_preTrn.py", line 396, in <module>
+    img_t = preprocess(img)
+  File "/home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages/torchvision/transforms/transforms.py", line 61, in __call__
+    img = t(img)
+  File "/home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages/torchvision/transforms/transforms.py", line 212, in __call__
+    return F.normalize(tensor, self.mean, self.std, self.inplace)
+  File "/home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages/torchvision/transforms/functional.py", line 298, in normalize
+    tensor.sub_(mean).div_(std)
+RuntimeError: The size of tensor a (4) must match the size of tensor b (3) at non-singleton dimension 0
+"""
+#
+#spacenet again 
+# test_image = Image.open(test_image_name).convert('RGB')
+# SOURCE SO -- https://stackoverflow.com/questions/58496858/pytorch-runtimeerror-the-size-of-tensor-a-4-must-match-the-size-of-tensor-b
+#
+#img = Image.open("spacenet.png")
+img = Image.open("spacenet.png").convert('RGB')
+img_t = preprocess(img)
+#print(type(img_t)) #<class 'torch.Tensor'>
+#print(img_t.shape) #torch.Size([3, 224, 224])
+#
+batch_t = torch.unsqueeze(img_t, 0)
+#print(type(batch_t))##<class 'torch.Tensor'>
+#
+out = resnet(batch_t)
+#print(out)
+#
+with open('imagenet_classes.txt') as f:
+    labels = [line.strip() for line in f.readlines()]
+    #print(len(labels)) # 1000
+#
+_, index = torch.max(out, 1)
+#
+percentage = torch.nn.functional.softmax(out, dim=1)[0] * 100
+print(labels[index[0]], percentage[index[0]].item()) #hook, claw 0.5767431855201721
+#
+_, indices = torch.sort(out, descending=True)
+print([(labels[idx], percentage[idx].item()) for idx in indices[0][:5]])
+#
+"""
+[('hook, claw', 0.5767431855201721), ('bucket, pail', 0.5109789967536926), ("plunger, plumber's helper", 0.44461846351623535), ('pole', 0.44279977679252625), ('tennis ball', 0.42658472061157227)]
+"""
+
