@@ -498,14 +498,27 @@ Returns a namedtuple (values, indices) where values is the maximum value
 of each row of the input tensor in the given dimension dim. 
 And indices is the index location of each maximum value found (argmax).
 """
-_, index = torch.max(out, 1)
+#_, index = torch.max(out, 1)
+value, index = torch.max(out, 1)
 print(index) # tensor([235])
+# index corresponding to maximum score in the out tensor we obtained previously
+# INDEX == one-element, one-dimensional tensor
 print(index[0])#tensor(235)
 print("---AA    ---" *10)
-print(_) # tensor([14.5138], grad_fn=<MaxBackward0>)
+print(value) # tensor([14.5138], grad_fn=<MaxBackward0>)
+# grad_fn --- Gradient function ? 
 print("--- BB   ---" *10)
 #
+"""
+FOOBAR-- Needs further reading --->> max simply selects the greatest value and ignores the others,
+ so max is the identity operation for that one element. 
+Therefore the gradient can flow backwards through it for just that one element.
+"""
 percentage = torch.nn.functional.softmax(out, dim=1)[0] * 100
+print(type(percentage)) #<class 'torch.Tensor'>
+# Given that - 235 is the INDEX valur from above -- value, index = torch.max(out, 1)
+print(percentage[235]) # tensor(98.7241, grad_fn=<SelectBackward>)
+print("--- CC   ---" *10)
 print(labels[index[0]], percentage[index[0]].item()) 
 #
 _, indices = torch.sort(out, descending=True)
