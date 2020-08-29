@@ -461,6 +461,19 @@ import PIL
 plt.imshow(np.transpose(img_t,(1, 2, 0))) # after transpose shape == 224,224,3 ( Length , Breath , Channels)
 plt.show()
 #
+
+"""
+# torch.unsqueeze = 
+## Souce_Official_Docs = https://github.com/pytorch/pytorch/blob/64906497cd8c1d3de77c7ac55a1ee5976f62c6cd/torch/_torch_docs.py#L7512
+>>> x = torch.tensor([1, 2, 3, 4])
+>>> torch.unsqueeze(x, 0)
+tensor([[ 1,  2,  3,  4]])
+>>> torch.unsqueeze(x, 1)
+tensor([[ 1],
+        [ 2],
+        [ 3],
+        [ 4]])
+"""
 batch_t = torch.unsqueeze(img_t, 0)
 #print(type(batch_t))##<class 'torch.Tensor'>
 
@@ -479,7 +492,9 @@ with open('../img_inputs/imagenet_classes.txt') as f:
     #print(len(labels)) # 1000
 #
 _, index = torch.max(out, 1)
-#
+#torch.max = 
+
+
 percentage = torch.nn.functional.softmax(out, dim=1)[0] * 100
 print(labels[index[0]], percentage[index[0]].item()) 
 #
