@@ -363,7 +363,41 @@ ResNet(
   (fc): Linear(in_features=2048, out_features=1000, bias=True)
 )
 """
+## 
+"""
+Souce_Official_Docs = All pre-trained models expect input images normalized in the same way, 
+i.e. mini-batches of 3-channel RGB images of shape (3 x H x W), where H and W are expected 
+to be at least 224. 
+The images have to be loaded in to a range of [0, 1] and then normalized 
+using mean = [0.485, 0.456, 0.406] and std = [0.229, 0.224, 0.225]. 
+You can use the following transform to normalize:
+
+"""
+## FOOBAR_TBD - Give all - transforms - in ARGPARSE - 
+
+"""
+## Experimenting below with Commenting out the - CenterCrop and Resize
 #
+German shepherd, German shepherd dog, German police dog, alsatian 15.30337905883789
+[('German shepherd, German shepherd dog, German police dog, alsatian', 15.30337905883789), 
+('malinois', 3.383474349975586), 
+('Leonberg', 2.683472156524658), 
+('Irish wolfhound', 1.8499466180801392), 
+('Saluki, gazelle hound', 1.5208722352981567)]
+"""
+
+"""
+## Experimenting below keeping - CenterCrop and Resize
+## FOOBAR--- we get 98.72% Now in place of 15.30% earlier without - CenterCrop and Resize
+German shepherd, German shepherd dog, German police dog, alsatian 98.72412872314453
+[('German shepherd, German shepherd dog, German police dog, alsatian', 98.72412872314453), 
+('malinois', 0.4503569006919861), 
+('Norwegian elkhound, elkhound', 0.1573256552219391), 
+('Leonberg', 0.10771603882312775), 
+('muzzle', 0.08178723603487015)]
+"""
+
+
 from torchvision import transforms
 preprocess = transforms.Compose([
         transforms.Resize(256),
@@ -379,9 +413,8 @@ from PIL import Image
 #img = Image.open("box.png")
 #print(type(img)) #<class 'PIL.PngImagePlugin.PngImageFile'>
 """
-####RuntimeError: output with shape [1, 224, 224] doesn't match the broadcast shape [3, 224, 224]
-
-### GreyScale Image ?? 
+# RuntimeError: output with shape [1, 224, 224] doesn't match the broadcast shape [3, 224, 224]
+# Passed in as Input a - GrayScale Image - Single Channel Image - OutPut shape is incorrect - thus got the below error ?? 
 Traceback (most recent call last):
   File "1_preTrn.py", line 381, in <module>
     img_t = preprocess(img)
@@ -409,19 +442,34 @@ Traceback (most recent call last):
     tensor.sub_(mean).div_(std)
 RuntimeError: The size of tensor a (4) must match the size of tensor b (3) at non-singleton dimension 0
 """
-#
+
 #spacenet again 
 # test_image = Image.open(test_image_name).convert('RGB')
 # SOURCE SO -- https://stackoverflow.com/questions/58496858/pytorch-runtimeerror-the-size-of-tensor-a-4-must-match-the-size-of-tensor-b
-#
-#img = Image.open("spacenet.png")
-img = Image.open("spacenet.png").convert('RGB')
+
+#img = Image.open("spacenet.png").convert('RGB')
+img = Image.open("dog.jpg").convert('RGB')
 img_t = preprocess(img)
 #print(type(img_t)) #<class 'torch.Tensor'>
 #print(img_t.shape) #torch.Size([3, 224, 224])
+
+import matplotlib.pyplot as plt
+import numpy as np
+import PIL
+
+#Show image after - preprocess(Transforms that we have done - transforms.Compose)
+plt.imshow(np.transpose(img_t,(1, 2, 0))) # after transpose shape == 224,224,3 ( Length , Breath , Channels)
+plt.show()
 #
 batch_t = torch.unsqueeze(img_t, 0)
 #print(type(batch_t))##<class 'torch.Tensor'>
+
+#Why call EVAL - Souce_Official_Docs = For Inference ( Running pre-trained Model) - we call EVAL on the Network set dropout and 
+#batch normalization layers to evaluation mode before running inference. 
+#Failing to do this will yield inconsistent inference results.
+
+resnet.eval()
+#print(resnet.eval()) # Same as the Terminal Print for --- #print(resnet) - done ABOVE
 #
 out = resnet(batch_t)
 #print(out)
@@ -433,12 +481,23 @@ with open('imagenet_classes.txt') as f:
 _, index = torch.max(out, 1)
 #
 percentage = torch.nn.functional.softmax(out, dim=1)[0] * 100
-print(labels[index[0]], percentage[index[0]].item()) #hook, claw 0.5767431855201721
+print(labels[index[0]], percentage[index[0]].item()) 
 #
 _, indices = torch.sort(out, descending=True)
 print([(labels[idx], percentage[idx].item()) for idx in indices[0][:5]])
 #
 """
-[('hook, claw', 0.5767431855201721), ('bucket, pail', 0.5109789967536926), ("plunger, plumber's helper", 0.44461846351623535), ('pole', 0.44279977679252625), ('tennis ball', 0.42658472061157227)]
+# Excellent results for the - German shepherd dog image - 
+German shepherd, German shepherd dog, German police dog, alsatian 15.30337905883789
+[('German shepherd, German shepherd dog, German police dog, alsatian', 15.30337905883789), 
+('malinois', 3.383474349975586), ('Leonberg', 2.683472156524658), 
+('Irish wolfhound', 1.8499466180801392), 
+('Saluki, gazelle hound', 1.5208722352981567)]
+
+
+# For Spacenet Image of the - Texas Hotel - mostly Rubbish - as its a Complex image
+[('hook, claw', 0.5767431855201721), ('bucket, pail', 0.5109789967536926), 
+("plunger, plumber's helper", 0.44461846351623535), ('pole', 0.44279977679252625), 
+('tennis ball', 0.42658472061157227)]
 """
 
