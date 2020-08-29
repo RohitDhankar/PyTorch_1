@@ -491,10 +491,20 @@ with open('../img_inputs/imagenet_classes.txt') as f:
     labels = [line.strip() for line in f.readlines()]
     #print(len(labels)) # 1000
 #
+
+"""
+#torch.max = https://pytorch.org/docs/stable/generated/torch.max.html
+Returns a namedtuple (values, indices) where values is the maximum value 
+of each row of the input tensor in the given dimension dim. 
+And indices is the index location of each maximum value found (argmax).
+"""
 _, index = torch.max(out, 1)
-#torch.max = 
-
-
+print(index) # tensor([235])
+print(index[0])#tensor(235)
+print("---AA    ---" *10)
+print(_) # tensor([14.5138], grad_fn=<MaxBackward0>)
+print("--- BB   ---" *10)
+#
 percentage = torch.nn.functional.softmax(out, dim=1)[0] * 100
 print(labels[index[0]], percentage[index[0]].item()) 
 #
@@ -502,7 +512,15 @@ _, indices = torch.sort(out, descending=True)
 print([(labels[idx], percentage[idx].item()) for idx in indices[0][:5]])
 #
 """
-# Excellent results for the - German shepherd dog image - 
+## FOOBAR--- we get 98.72% Now in place of 15.30% earlier without - CenterCrop and Resize
+German shepherd, German shepherd dog, German police dog, alsatian 98.72412872314453
+[('German shepherd, German shepherd dog, German police dog, alsatian', 98.72412872314453), 
+('malinois', 0.4503569006919861), 
+('Norwegian elkhound, elkhound', 0.1573256552219391), 
+('Leonberg', 0.10771603882312775), 
+('muzzle', 0.08178723603487015)]
+
+# Initial results for the - German shepherd dog image - 
 German shepherd, German shepherd dog, German police dog, alsatian 15.30337905883789
 [('German shepherd, German shepherd dog, German police dog, alsatian', 15.30337905883789), 
 ('malinois', 3.383474349975586), ('Leonberg', 2.683472156524658), 
