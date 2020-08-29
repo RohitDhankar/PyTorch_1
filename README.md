@@ -1,10 +1,10 @@
-##### Learning the very Basics of PyTorch 
+## PyTorch 
 
 #
 
-<h1 align="center">learning-PyTorch - </h1>
+<h1 align="center">PyTorch - 2020</h1>
 
-> This repository will contain both code and additional reading material refrences for PyTorch **- learning-PyTorch**
+> This repository will contain both code and additional reading material refrences for PyTorch **PyTorch - 2020**
  
 > If you are reading this - you are Welcome to contribute. 
 

@@ -448,7 +448,7 @@ RuntimeError: The size of tensor a (4) must match the size of tensor b (3) at no
 # SOURCE SO -- https://stackoverflow.com/questions/58496858/pytorch-runtimeerror-the-size-of-tensor-a-4-must-match-the-size-of-tensor-b
 
 #img = Image.open("spacenet.png").convert('RGB')
-img = Image.open("dog.jpg").convert('RGB')
+img = Image.open("../img_inputs/dog.jpg").convert('RGB')
 img_t = preprocess(img)
 #print(type(img_t)) #<class 'torch.Tensor'>
 #print(img_t.shape) #torch.Size([3, 224, 224])
@@ -474,7 +474,7 @@ resnet.eval()
 out = resnet(batch_t)
 #print(out)
 #
-with open('imagenet_classes.txt') as f:
+with open('../img_inputs/imagenet_classes.txt') as f:
     labels = [line.strip() for line in f.readlines()]
     #print(len(labels)) # 1000
 #
