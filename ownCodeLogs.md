@@ -2,6 +2,16 @@
 ##### Check all systems GO !!!
 
 #
+> Visualise PyTorch tensors and layers etc 
+- Visdom - Visline -- https://github.com/facebookresearch/visdom#visline
+- torch.utils.tensorboard -- TensorBoard from torch >> utils 
+
+```
+Another option was to use Crayon and TensorBoard , now Crayon is Archived - https://github.com/torrvision/crayon
+Crayon is used here on Kaggle - https://www.kaggle.com/solomonk/pytorch-senet-augmentation-cnn-lb-0-956
+```
+
+#
 
 ```
 #PyTorch --- BatchNorm2d
