@@ -12,6 +12,11 @@ Crayon is used here on Kaggle - https://www.kaggle.com/solomonk/pytorch-senet-au
 ```
 
 #
+> Deploy PyTorch models with Flask - 
+- pytorch-flask-api - https://github.com/avinassh/pytorch-flask-api
+- pytorch-flask-api - https://pytorch.org/tutorials/intermediate/flask_rest_api_tutorial.html
+
+#
 
 ```
 #PyTorch --- BatchNorm2d
