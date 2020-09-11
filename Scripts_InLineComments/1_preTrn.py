@@ -409,7 +409,10 @@ preprocess = transforms.Compose([
         )])
 #print(type(preprocess))    #<class 'torchvision.transforms.transforms.Compose'>    
 #
-from PIL import Image
+# after transpose shape == 224,224,3 ( Length , Breath , Channels)
+plt.show()
+#
+
 #img = Image.open("box.png")
 #print(type(img)) #<class 'PIL.PngImagePlugin.PngImageFile'>
 """
@@ -453,9 +456,6 @@ img_t = preprocess(img)
 #print(type(img_t)) #<class 'torch.Tensor'>
 #print(img_t.shape) #torch.Size([3, 224, 224])
 
-import matplotlib.pyplot as plt
-import numpy as np
-import PIL
 
 #Show image after - preprocess(Transforms that we have done - transforms.Compose)
 plt.imshow(np.transpose(img_t,(1, 2, 0))) # after transpose shape == 224,224,3 ( Length , Breath , Channels)
@@ -515,9 +515,9 @@ FOOBAR-- Needs further reading --->> max simply selects the greatest value and i
 Therefore the gradient can flow backwards through it for just that one element.
 """
 percentage = torch.nn.functional.softmax
-(out, dim=1)[0] * 100
+#(out, dim=1)[0] * 100 --- FOOBAR_Check
 print(type(percentage)) #<class 'torch.Tensor'>
-# Given that - 235 is the INDEX valur from above -- value, index = torch.max(out, 1)
+# Given that - 235 is the INDEX value from above -- value, index = torch.max(out, 1)
 print(percentage[235]) # Prints Percentage - 98.72% 
 # tensor(98.7241, grad_fn=<SelectBackward>)
 print("     " *10)

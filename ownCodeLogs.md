@@ -219,4 +219,47 @@ German shepherd, German shepherd dog, German police dog, alsatian 98.72412872314
 (pytorch_venv) dhankar@dhankar-1:~/temp/pytorch/PyTorch_1/Scripts_InLineComments$ 
 ```
 
+#
+
+```
+$ pip install albumentations
+Processing /home/dhankar/.cache/pip/wheels/d2/e3/0b/99a239413035502833a7b07283894243fddf5ce3aa720ca8dd/albumentations-0.4.6-py3-none-any.whl
+Requirement already satisfied: scipy in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from albumentations) (1.5.2)
+Processing /home/dhankar/.cache/pip/wheels/13/90/db/290ab3a34f2ef0b5a0f89235dc2d40fea83e77de84ed2dc05c/PyYAML-5.3.1-cp38-cp38-linux_x86_64.whl
+Requirement already satisfied: numpy>=1.11.1 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from albumentations) (1.19.1)
+Collecting opencv-python>=4.1.1
+  Downloading opencv_python-4.4.0.42-cp38-cp38-manylinux2014_x86_64.whl (49.4 MB)
+     |████████████████████████████████| 49.4 MB 27.7 MB/s 
+Collecting imgaug>=0.4.0
+  Using cached imgaug-0.4.0-py2.py3-none-any.whl (948 kB)
+Requirement already satisfied: Pillow in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from imgaug>=0.4.0->albumentations) (7.2.0)
+Requirement already satisfied: six in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from imgaug>=0.4.0->albumentations) (1.15.0)
+Collecting Shapely
+  Downloading Shapely-1.7.1-cp38-cp38-manylinux1_x86_64.whl (1.0 MB)
+     |████████████████████████████████| 1.0 MB 56.0 MB/s 
+Collecting imageio
+  Downloading imageio-2.9.0-py3-none-any.whl (3.3 MB)
+     |████████████████████████████████| 3.3 MB 40.8 MB/s 
+Requirement already satisfied: matplotlib in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from imgaug>=0.4.0->albumentations) (3.3.1)
+Collecting scikit-image>=0.14.2
+  Using cached scikit_image-0.17.2-cp38-cp38-manylinux1_x86_64.whl (12.4 MB)
+Requirement already satisfied: certifi>=2020.06.20 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from matplotlib->imgaug>=0.4.0->albumentations) (2020.6.20)
+Requirement already satisfied: kiwisolver>=1.0.1 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from matplotlib->imgaug>=0.4.0->albumentations) (1.2.0)
+Requirement already satisfied: python-dateutil>=2.1 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from matplotlib->imgaug>=0.4.0->albumentations) (2.8.1)
+Requirement already satisfied: pyparsing!=2.0.4,!=2.1.2,!=2.1.6,>=2.0.3 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from matplotlib->imgaug>=0.4.0->albumentations) (2.4.7)
+Requirement already satisfied: cycler>=0.10 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from matplotlib->imgaug>=0.4.0->albumentations) (0.10.0)
+Collecting PyWavelets>=1.1.1
+  Using cached PyWavelets-1.1.1-cp38-cp38-manylinux1_x86_64.whl (4.4 MB)
+Collecting networkx>=2.0
+  Downloading networkx-2.5-py3-none-any.whl (1.6 MB)
+     |████████████████████████████████| 1.6 MB 56.5 MB/s 
+Collecting tifffile>=2019.7.26
+  Downloading tifffile-2020.9.3-py3-none-any.whl (148 kB)
+     |████████████████████████████████| 148 kB 33.5 MB/s 
+Requirement already satisfied: decorator>=4.3.0 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from networkx>=2.0->scikit-image>=0.14.2->imgaug>=0.4.0->albumentations) (4.4.2)
+Installing collected packages: PyYAML, opencv-python, Shapely, imageio, PyWavelets, networkx, tifffile, scikit-image, imgaug, albumentations
+Successfully installed PyWavelets-1.1.1 PyYAML-5.3.1 Shapely-1.7.1 albumentations-0.4.6 imageio-2.9.0 imgaug-0.4.0 networkx-2.5 opencv-python-4.4.0.42 scikit-image-0.17.2 tifffile-2020.9.3
+(pytorch_venv) dhankar@dhankar-1:~/temp/pytorch/PyTorch_1$ 
+```
+#
 
