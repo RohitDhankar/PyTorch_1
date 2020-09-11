@@ -310,3 +310,60 @@ Successfully installed PyWavelets-1.1.1 PyYAML-5.3.1 Shapely-1.7.1 albumentation
 ```
 #
 
+> pip install tensorboard
+
+```
+$ pip install tensorboard
+Collecting tensorboard
+  Downloading tensorboard-2.3.0-py3-none-any.whl (6.8 MB)
+     |████████████████████████████████| 6.8 MB 4.6 MB/s 
+Collecting grpcio>=1.24.3
+  Downloading grpcio-1.32.0-cp38-cp38-manylinux2014_x86_64.whl (3.8 MB)
+     |████████████████████████████████| 3.8 MB 30.3 MB/s 
+Requirement already satisfied: six>=1.10.0 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from tensorboard) (1.15.0)
+Requirement already satisfied: numpy>=1.12.0 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from tensorboard) (1.19.1)
+Collecting werkzeug>=0.11.15
+  Using cached Werkzeug-1.0.1-py2.py3-none-any.whl (298 kB)
+Requirement already satisfied: wheel>=0.26; python_version >= "3" in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from tensorboard) (0.34.2)
+Requirement already satisfied: requests<3,>=2.21.0 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from tensorboard) (2.24.0)
+Requirement already satisfied: setuptools>=41.0.0 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from tensorboard) (49.2.0.post20200714)
+Collecting markdown>=2.6.8
+  Using cached Markdown-3.2.2-py3-none-any.whl (88 kB)
+Collecting google-auth-oauthlib<0.5,>=0.4.1
+  Using cached google_auth_oauthlib-0.4.1-py2.py3-none-any.whl (18 kB)
+Collecting absl-py>=0.4
+  Downloading absl_py-0.10.0-py3-none-any.whl (127 kB)
+     |████████████████████████████████| 127 kB 31.9 MB/s 
+Collecting protobuf>=3.6.0
+  Downloading protobuf-3.13.0-cp38-cp38-manylinux1_x86_64.whl (1.3 MB)
+     |████████████████████████████████| 1.3 MB 117.0 MB/s 
+Collecting google-auth<2,>=1.6.3
+  Downloading google_auth-1.21.1-py2.py3-none-any.whl (93 kB)
+     |████████████████████████████████| 93 kB 115 kB/s 
+Collecting tensorboard-plugin-wit>=1.6.0
+  Downloading tensorboard_plugin_wit-1.7.0-py3-none-any.whl (779 kB)
+     |████████████████████████████████| 779 kB 15.1 MB/s 
+Requirement already satisfied: chardet<4,>=3.0.2 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from requests<3,>=2.21.0->tensorboard) (3.0.4)
+Requirement already satisfied: certifi>=2017.4.17 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from requests<3,>=2.21.0->tensorboard) (2020.6.20)
+Requirement already satisfied: idna<3,>=2.5 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from requests<3,>=2.21.0->tensorboard) (2.10)
+Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (from requests<3,>=2.21.0->tensorboard) (1.25.10)
+Collecting requests-oauthlib>=0.7.0
+  Using cached requests_oauthlib-1.3.0-py2.py3-none-any.whl (23 kB)
+Collecting rsa<5,>=3.1.4; python_version >= "3.5"
+  Downloading rsa-4.6-py3-none-any.whl (47 kB)
+     |████████████████████████████████| 47 kB 602 kB/s 
+Collecting cachetools<5.0,>=2.0.0
+  Downloading cachetools-4.1.1-py3-none-any.whl (10 kB)
+Collecting pyasn1-modules>=0.2.1
+  Using cached pyasn1_modules-0.2.8-py2.py3-none-any.whl (155 kB)
+Collecting oauthlib>=3.0.0
+  Using cached oauthlib-3.1.0-py2.py3-none-any.whl (147 kB)
+Collecting pyasn1>=0.1.3
+  Using cached pyasn1-0.4.8-py2.py3-none-any.whl (77 kB)
+Installing collected packages: grpcio, werkzeug, markdown, pyasn1, rsa, cachetools, pyasn1-modules, google-auth, oauthlib, requests-oauthlib, google-auth-oauthlib, absl-py, protobuf, tensorboard-plugin-wit, tensorboard
+Successfully installed absl-py-0.10.0 cachetools-4.1.1 google-auth-1.21.1 google-auth-oauthlib-0.4.1 grpcio-1.32.0 markdown-3.2.2 oauthlib-3.1.0 protobuf-3.13.0 pyasn1-0.4.8 pyasn1-modules-0.2.8 requests-oauthlib-1.3.0 rsa-4.6 tensorboard-2.3.0 tensorboard-plugin-wit-1.7.0 werkzeug-1.0.1
+(pytorch_venv) dhankar@dhankar-1:~/temp/pytorch/PyTorch_1/Scripts_InLineComments$ 
+(pytorch_venv) dhankar@dhankar-1:~/temp/pytorch/PyTorch_1/Scripts_InLineComments$ python 4_alb_aug.py 
+(pytorch_venv) dhankar@dhankar-1:~/temp/pytorch/PyTorch_1/Scripts_InLineComments$ 
+```
+#
