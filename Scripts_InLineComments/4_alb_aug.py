@@ -6,18 +6,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 import albumentations as alb
-#from albumentations import *
-#Show image after - albumentations-
-print("-Testing-------albumentations--AAA")
-img = Image.open("../img_inputs/dog.jpg").convert('RGB')
-img_t = preprocess(img)
-#plt.imshow(np.transpose(img_t,(1, 2, 0))) 
-#
+import random , cv2 
+
+def vis_img(image):
+    plt.figure(figsize=(10, 10))
+    plt.axis('off')
+    plt.imshow(image)
+    plt.show()
+
+image = cv2.imread('../img_inputs/dog.jpg')
+image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+#print(type(image))#<class 'numpy.ndarray'>
+#vis_img(image)    
 transform = alb.HorizontalFlip(p=0.5)
-#random.seed(7)
-alb_aug_img = transform(image=img_t)['image']
-print(type(alb_aug_img))
-#plt.imshow(augmented_image)
-#
-print("-Testing-------albumentations--BBB")
-#Without_PreProcess == TypeError: Invalid shape (1176, 3, 595) for image data
+hflip_img = transform(image=image)['image']
+vis_img(hflip_img)
+
