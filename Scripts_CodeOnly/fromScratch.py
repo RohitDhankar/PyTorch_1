@@ -37,30 +37,32 @@ class Conv:
         for j in range(height - f_size +1):
             for k in range(width - f_size +1):
                 image_patch = image[j:(j+f_size), k:(k+f_size)]
-                yield image_region, j, k
+                yield image_patch, j, k
     
-#     def forward(self, input):
-#         '''
-#             Forward pass of the convolution layer
-#             Input is a 2d numpy array
-#             Returns a 3d numpy array with dimensions (height, width, num_filters)
-#         '''
-#         self.last_input = input
-#         height, width = input.shape
-#         output = np.zeros((height-2, width-2, self.num_filters))
-#         for image_region, i, j in self.iterate_regions(input):
-#             output[i, j] = np.sum(image_region * self.filters, axis=(1,2)) #this is the actual convolution
-#         return output
+    def forward(self, image):
+        '''
+        '''
+        height, width = image.shape
+        f_size = self.filter_size
+        num_filters = self.num_filters
+        conv_fil = self.conv_filter
+
+        conv_out = np.zeros((height- f_size +1, width- f_size +1, num_filters))
+        for image_patch, i, j in self.image_region(image): #Unpacking values ?
+            conv_out[i, j] = np.sum(image_region * conv_fil, axis=(1,2)) 
+            #this is the actual convolution
+        return conv_out
   
-#     def backprop(self, loss_gradient, learning_rate):
-#         '''
-#             Backward pass of the convolution layer
-#         '''
-#         loss_filters = np.zeros(self.filters.shape)
-#         for image_region, i, j in self.iterate_regions(self.last_input):
-#             for f in range(self.num_filters):
-#                 loss_filters[f] += loss_gradient[i, j, f] * image_region        
-#         self.filters -= learning_rate*loss_filters
+    def backprop(self,dL_dout, learning_rate): 
+        '''
+        #loss_gradient = dL_dout -- is the output of the MaxPooling Layer
+            Backward pass of the convolution layer
+        '''
+        dL_dF_params = np.zeros(self.conv_filter.shape) #loss_filters = dL_dF_params
+        for image_patch, i, j in self.image_region(self.image): #last_input
+            for k in range(self.num_filters):
+                loss_filters[f] += dL_dout[i, j, f] * image_patch  ##loss_gradient = dL_dout     
+        self.filters -= learning_rate*loss_filters
         
         
         
