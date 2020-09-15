@@ -35,7 +35,7 @@ class Conv_class:
         # self.last_input = None
     
     
-    def image_region(self, image):
+    cpdef image_region(self, image):
         '''
         Generator method which will YIELD the image_patch ( Numpy Array) of Dimensions - 7X7
         These - image_patch - numpy arrays will be the TARGET's over which the KERNEL's will be EMBOSSED
@@ -44,9 +44,15 @@ class Conv_class:
         height, width = image.shape
         #print(height) # 595 , #(595, 1176)
         #self.image = image # Not required ?? 
+        
+        cdef int f_size
+
         f_size = self.filter_size 
         #print("Func = image_region , Filter Size---> ", f_size) #7
         #cntImgPatch = 0
+
+        cdef int j
+        cdef int k
 
         for j in range(height - f_size +1):
             for k in range(width - f_size +1):
