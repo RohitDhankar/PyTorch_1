@@ -11,7 +11,13 @@ Requirement already satisfied: cython in /home/dhankar/anaconda3/envs/pytorch_ve
 
 """
 import matplotlib.pyplot as plt
+
+# CyThon_Changes - https://cython.readthedocs.io/en/latest/src/tutorial/numpy.html
+
 import numpy as np
+cimport numpy as np
+DTYPE = np.int
+
 #from PIL import Image
 #import albumentations as alb
 import random , cv2 
@@ -24,23 +30,27 @@ plt.imshow(img_input,cmap = 'gray')
 print(img_input.shape)#(595, 1176)
 
 class Conv_class:
-    def __init__(self, num_filters,filter_size):
+    def __init__(self, int num_filters, int filter_size):
         '''
-        num_filters,filter_size
+        # CyThon_Changes -  int num_filters ,   int filter_size
         '''
+        
+
         self.num_filters = num_filters 
         self.filter_size = filter_size
         self.conv_filter = np.random.randn(num_filters,filter_size,filter_size)/(filter_size*filter_size)
-        # self.filters = np.random.randn(num_filters, 3, 3) / 9 
-        # self.last_input = None
+        # self.filters = np.random.randn(num_filters, 3, 3) / 9 # Code from the wild
+        # self.last_input = None # Code from the wild
     
     
-    cpdef image_region(self, image):
+    def image_region(self, image):
         '''
         Generator method which will YIELD the image_patch ( Numpy Array) of Dimensions - 7X7
         These - image_patch - numpy arrays will be the TARGET's over which the KERNEL's will be EMBOSSED
         WIP - Count image_patches ... #Maybe == 6,89,130 , from experimenting with Counter == cntImgPatch 
         '''
+        cdef int height , width
+
         height, width = image.shape
         #print(height) # 595 , #(595, 1176)
         #self.image = image # Not required ?? 
@@ -51,12 +61,13 @@ class Conv_class:
         #print("Func = image_region , Filter Size---> ", f_size) #7
         #cntImgPatch = 0
 
-        cdef int j
-        cdef int k
+        cdef int j , k 
 
         for j in range(height - f_size +1):
             for k in range(width - f_size +1):
                 image_patch = image[j:(j+f_size), k:(k+f_size)]
+                # CyThon_Change
+                image_patch.dtype == DTYPE
                 #print(type(image_patch)) #<class 'numpy.ndarray'>
                 #print(image_patch.shape) # (7,7)
                 #cntImgPatch +=1
@@ -66,8 +77,11 @@ class Conv_class:
     def forward_prop(self, image):
         '''
         '''
+        image.dtype == DTYPE
+        cdef int height , width #, self.filter_size
+
         height, width = image.shape
-        f_size = self.filter_size
+        cdef int f_size = self.filter_size
         num_filters = self.num_filters
         conv_fil = self.conv_filter
 
@@ -96,7 +110,8 @@ img_out1 = conn.forward_prop(img_input)
 print(img_out1.shape) # (589, 1170, 18)
 
 # Done -- Loop through various plots - to see effect of Diff Filters
-for plt_cnt in range(17):
+cdef int plt_cnt
+for plt_cnt in range(2):
     plt.imshow(img_out1[:,:,plt_cnt])
     plt.show(block=False)
     plt.pause(1)

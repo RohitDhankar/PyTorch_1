@@ -90,7 +90,7 @@ img_out1 = conn.forward_prop(img_input)
 print(img_out1.shape) # (589, 1170, 18)
 
 # Done -- Loop through various plots - to see effect of Diff Filters
-for plt_cnt in range(17):
+for plt_cnt in range(2):
     plt.imshow(img_out1[:,:,plt_cnt])
     plt.show(block=False)
     plt.pause(1)
