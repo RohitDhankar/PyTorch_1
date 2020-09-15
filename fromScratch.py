@@ -30,14 +30,23 @@ class Conv_class:
     
     def image_region(self, image):
         '''
+        Generator method which will YIELD the image_patch ( Numpy Array) 
+        These - image_patch - numpy arrays will be TARGET over which the KERNEL will be EMBOSSED
+        WIP - Check how many image_patches are there ? 
+        
         '''
         height, width = image.shape
+        #print(height) # 595
+        #(595, 1176)
         #self.image = image # Not required ?? 
         f_size = self.filter_size 
+        #print("Func = image_region , Filter Size---> ", f_size) #7
 
         for j in range(height - f_size +1):
             for k in range(width - f_size +1):
                 image_patch = image[j:(j+f_size), k:(k+f_size)]
+                #print(type(image_patch)) #<class 'numpy.ndarray'>
+
                 yield image_patch, j, k
     
     def forward_prop(self, image):
@@ -67,11 +76,11 @@ class Conv_class:
         #Above - update rule for the Conv Filter - it updates the Weights of the Conv Filter
         return dL_dF_params
 
-conn = Conv_class(18,7)
+conn = Conv_class(18,7) # Count of Filters == 18 , Shape of Filters == 7 X 7 
 img_out1 = conn.forward_prop(img_input)
 #print(type(img_out1)) #<class 'numpy.ndarray'>
-print(img_out1.shape)
-# Cant plot a 3D Aray - TypeError: Invalid shape (589, 1170, 18) for image data
+print(img_out1.shape) # (589, 1170, 18)
+
 # Done -- Loop through various plots - to see effect of Diff Filters
 for plt_cnt in range(17):
     plt.imshow(img_out1[:,:,plt_cnt])
