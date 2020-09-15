@@ -72,20 +72,15 @@ img_out1 = conn.forward_prop(img_input)
 #print(type(img_out1)) #<class 'numpy.ndarray'>
 print(img_out1.shape)
 # Cant plot a 3D Aray - TypeError: Invalid shape (589, 1170, 18) for image data
-plt.imshow(img_out1[:,:,17],cmap = 'gray')
-plt.show() 
-#plt.close() # FOOBAR_WIP -- Loop through various plots - to see effect of Diff Filters
-# Name the Plots so that they relate back to the Filters 
-# Try Not to use random Filters ?? 
+# Done -- Loop through various plots - to see effect of Diff Filters
+for plt_cnt in range(17):
+    plt.imshow(img_out1[:,:,plt_cnt])
+    plt.show(block=False)
+    plt.pause(1)
+    plt.close()
+# FOOBAR_WIP -- Name the Plots so that they relate back to the Filters 
+# FOOBAR_WIP -- Try Not to use random Filters ?? 
 
-plt.imshow(img_out1[:,:,16],cmap = 'gray')
-plt.show() 
-plt.imshow(img_out1[:,:,13])
-plt.show() 
-plt.imshow(img_out1[:,:,5])
-plt.show() 
-plt.imshow(img_out1[:,:,2])
-plt.show() 
 
 
 
