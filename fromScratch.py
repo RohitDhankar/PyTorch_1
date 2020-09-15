@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Neural Net from Scratch
-Source -- Prof Ahlad Kumar YouTube Video -- https://www.youtube.com/watch?v=0zbhg79i_Bs
+Neural Net from Scratch - WORK IN PROGRESS
+MAIN CODE Source -- Prof Ahlad Kumar YouTube 
+Video -- https://www.youtube.com/watch?v=0zbhg79i_Bs
 """
 import matplotlib.pyplot as plt
 import numpy as np
@@ -9,13 +10,13 @@ import numpy as np
 #import albumentations as alb
 import random , cv2 
 
-img = cv2.imread('../img_inputs/dog.jpg',cv2.IMREAD_GRAYSCALE)/255
+img_input = cv2.imread('./img_inputs/dog.jpg',cv2.IMREAD_GRAYSCALE)/255
 #img = cv2.imread('../img_inputs/dog.jpg')#Not GrayScale
-plt.imshow(img,cmap = 'gray')
-plt.show()
-print(img.shape)#(595, 1176)
+plt.imshow(img_input,cmap = 'gray')
+#plt.show() # Gray Dog
+print(img_input.shape)#(595, 1176)
 
-class Conv:
+class Conv_class:
     def __init__(self, num_filters,filter_size):
         '''
         num_filters,filter_size
@@ -39,7 +40,7 @@ class Conv:
                 image_patch = image[j:(j+f_size), k:(k+f_size)]
                 yield image_patch, j, k
     
-    def forward(self, image):
+    def forward_prop(self, image):
         '''
         '''
         height, width = image.shape
@@ -49,21 +50,52 @@ class Conv:
 
         conv_out = np.zeros((height- f_size +1, width- f_size +1, num_filters))
         for image_patch, i, j in self.image_region(image): #Unpacking values ?
-            conv_out[i, j] = np.sum(image_region * conv_fil, axis=(1,2)) 
+            conv_out[i, j] = np.sum(image_patch * conv_fil, axis=(1,2)) 
             #this is the actual convolution
         return conv_out
   
     def backprop(self,dL_dout, learning_rate): 
         '''
         #loss_gradient = dL_dout -- is the output of the MaxPooling Layer
-            Backward pass of the convolution layer
         '''
         dL_dF_params = np.zeros(self.conv_filter.shape) #loss_filters = dL_dF_params
         for image_patch, i, j in self.image_region(self.image): #last_input
             for k in range(self.num_filters):
-                loss_filters[f] += dL_dout[i, j, f] * image_patch  ##loss_gradient = dL_dout     
-        self.filters -= learning_rate*loss_filters
-        
+                dL_dF_params[k] += dL_dout[i, j, k] * image_patch  ##loss_gradient = dL_dout  
+        # Filter params update
+        self.conv_filter -= learning_rate*dL_dF_params
+        #Above - update rule for the Conv Filter - it updates the Weights of the Conv Filter
+        return dL_dF_params
+
+conn = Conv_class(18,7)
+img_out1 = conn.forward_prop(img_input)
+#print(type(img_out1)) #<class 'numpy.ndarray'>
+print(img_out1.shape)
+# Cant plot a 3D Aray - TypeError: Invalid shape (589, 1170, 18) for image data
+plt.imshow(img_out1[:,:,17],cmap = 'gray')
+plt.show() 
+#plt.close() # FOOBAR_WIP -- Loop through various plots - to see effect of Diff Filters
+# Name the Plots so that they relate back to the Filters 
+# Try Not to use random Filters ?? 
+
+plt.imshow(img_out1[:,:,16],cmap = 'gray')
+plt.show() 
+plt.imshow(img_out1[:,:,13])
+plt.show() 
+plt.imshow(img_out1[:,:,5])
+plt.show() 
+plt.imshow(img_out1[:,:,2])
+plt.show() 
+
+
+
+
+
+
+
+
+
+
         
         
 # '''
