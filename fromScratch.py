@@ -4,6 +4,12 @@ Neural Net from Scratch - WORK IN PROGRESS
 MAIN CODE Source -- Prof Ahlad Kumar YouTube 
 Video -- https://www.youtube.com/watch?v=0zbhg79i_Bs
 """
+"""
+Speed up code with - Static Typing using cython 
+$ pip3 install cython
+Requirement already satisfied: cython in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (0.29.21)
+
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 #from PIL import Image
@@ -30,24 +36,25 @@ class Conv_class:
     
     def image_region(self, image):
         '''
-        Generator method which will YIELD the image_patch ( Numpy Array) 
-        These - image_patch - numpy arrays will be TARGET over which the KERNEL will be EMBOSSED
-        WIP - Check how many image_patches are there ? 
-        
+        Generator method which will YIELD the image_patch ( Numpy Array) of Dimensions - 7X7
+        These - image_patch - numpy arrays will be the TARGET's over which the KERNEL's will be EMBOSSED
+        WIP - Count image_patches ... #Maybe == 6,89,130 , from experimenting with Counter == cntImgPatch 
         '''
         height, width = image.shape
-        #print(height) # 595
-        #(595, 1176)
+        #print(height) # 595 , #(595, 1176)
         #self.image = image # Not required ?? 
         f_size = self.filter_size 
         #print("Func = image_region , Filter Size---> ", f_size) #7
+        #cntImgPatch = 0
 
         for j in range(height - f_size +1):
             for k in range(width - f_size +1):
                 image_patch = image[j:(j+f_size), k:(k+f_size)]
                 #print(type(image_patch)) #<class 'numpy.ndarray'>
-
-                yield image_patch, j, k
+                #print(image_patch.shape) # (7,7)
+                #cntImgPatch +=1
+                #print(cntImgPatch) # Last print == 6,89,130 
+                yield image_patch, j, k 
     
     def forward_prop(self, image):
         '''
