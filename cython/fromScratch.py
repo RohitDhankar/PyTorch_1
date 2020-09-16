@@ -100,8 +100,6 @@ for plt_cnt in range(2):
 # FOOBAR_WIP -- Name the Plots so that they relate back to the Filters 
 # FOOBAR_WIP -- Try Not to use random Filters ?? 
 
-
-
 class max_pool:
     def __init__(self,filter_size):
         self.filter_size = filter_size
@@ -111,6 +109,7 @@ class max_pool:
         new_w = image.shape[1]
         #self.image = image # Not required ?? 
         f_size = self.filter_size
+        # Image patches that are extracted below , will be of Size - (new_h X new_w)
 
         for i in range(new_h):
             for j in range(new_w):
@@ -126,7 +125,37 @@ class max_pool:
 
         return output
 
-    def back_prop
+    def back_prop(self , dL_dout):
+        print(type(dL_dout)) #
+        # This - dL_dout - is coming in as PARAM up here from the method == soft_max.back_prop 
+        f_size = self.filter_size
+        dL_dmax_pool = np.zeros(self.image.shape)
+        for image_patch , i , j in self.image_region(self.image):
+            height , width , num_filters = image_patch.shape
+            max_val == np.amax(image_patch , axis = (0,1))
+
+            for i1 in range(height):
+                for j1 in range(width):
+                    for k1 in range(num_filters):
+                        if image_patch[i1,j1,k1] == max_vale[k1]:
+                            dL_dmax_pool[i*f_size +i1, j*f_size +j1 ,k1] = dL_dout[i,j,k1]
+            return dL_dmax_pool
+
+conn2 = max_pool(4) 
+img_out2 = conn2.forward_prop(img_out1) 
+# img_out1 , the output of the - conn Class above 
+# this img_out1 had the shape == (589, 1170, 18) 
+# It was giving us 17 Images , which were results of the RANDOM Filters??   
+print(img_out2.shape)
+
+for plt_cnt in range(2):
+    plt.imshow(img_out2[:,:,plt_cnt])
+    plt.show(block=False)
+    plt.pause(1)
+    plt.close()
+# FOOBAR_WIP -- Name the Plots so that they relate back to the Filters 
+# FOOBAR_WIP -- Try Not to use random Filters ?? 
+
 
 
 
