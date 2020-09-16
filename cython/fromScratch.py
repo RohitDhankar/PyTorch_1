@@ -117,11 +117,17 @@ class max_pool:
                 yield image_patch , i , j 
     
     def forward_prop(self , image):
+        f_size = self.filter_size
+        print("--image.shape---",image.shape) #(589, 1170, 18)
         height , width , num_filters = image.shape
-        output = np.zeros((height // self.filter_size , width // self.filter_size , num_filters))
+        output = np.zeros((height // f_size , width // f_size , num_filters))
+        print("--output.shape---",output.shape) #(147, 292, 18)
 
         for image_patch , i , j in self.image_region(image):
-            output[i,j] = np.amax(image_patch , axis = (0,1))
+            #print(np.amax(image_patch , axis = (0,1))
+            output[i,j] = np.amax(image_patch, axis = (0,1)) 
+            #axis = (0,1) ,should get - height, width only
+            #IndexError: index 292 is out of bounds for axis 1 with size 292
 
         return output
 
