@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 cimport numpy as np
 DTYPE = np.int
+print(type(DTYPE))
 
 #from PIL import Image
 #import albumentations as alb
