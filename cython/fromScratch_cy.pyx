@@ -15,9 +15,12 @@ import matplotlib.pyplot as plt
 # CyThon_Changes - https://cython.readthedocs.io/en/latest/src/tutorial/numpy.html
 
 import numpy as np
-cimport numpy as np
-DTYPE = np.int
-print(type(DTYPE))
+#cimport numpy as cnp # Compile time errors
+cimport numpy as np # Syntax confusion some places line above ? 
+
+DTYPE = np.int # WIP - Whats for Numpy Arrays with pixels ? INT ? 
+#print(DTYPE) #<class 'int'>
+#print(type(DTYPE)) #<class 'type'>
 
 #from PIL import Image
 #import albumentations as alb
@@ -34,8 +37,10 @@ class Conv_class:
     def __init__(self, int num_filters, int filter_size):
         '''
         # CyThon_Changes -  int num_filters ,   int filter_size
+        Cant make these changes as below - 
+        cdef int self.num_filters = num_filters # INCORRECT
         '''
-        
+        #print(type(num_filters)) #<class 'int'>
 
         self.num_filters = num_filters 
         self.filter_size = filter_size
@@ -83,16 +88,19 @@ class Conv_class:
 
         height, width = image.shape
         cdef int f_size = self.filter_size
-        num_filters = self.num_filters
+        cdef int num_filters = self.num_filters
         conv_fil = self.conv_filter
+        #cdef int conv_fil = self.conv_filter
+        # cdef above - throws an error as its a 2D Numpy Array -- TypeError: only size-1 arrays can be converted to Python scalars
 
         conv_out = np.zeros((height- f_size +1, width- f_size +1, num_filters))
+        print(type(conv_out))
         for image_patch, i, j in self.image_region(image): #Unpacking values ?
             conv_out[i, j] = np.sum(image_patch * conv_fil, axis=(1,2)) 
             #this is the actual convolution
         return conv_out
   
-    def backprop(self,dL_dout, learning_rate): 
+    def back_prop(self,dL_dout, learning_rate): 
         '''
         #loss_gradient = dL_dout -- is the output of the MaxPooling Layer
         '''

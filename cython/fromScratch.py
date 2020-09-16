@@ -44,7 +44,7 @@ class Conv_class:
         height, width = image.shape
         #print(height) # 595 , #(595, 1176)
         #self.image = image # Not required ?? 
-        f_size = self.filter_size 
+        f_size = self.filter_size
         #print("Func = image_region , Filter Size---> ", f_size) #7
         #cntImgPatch = 0
 
@@ -71,9 +71,11 @@ class Conv_class:
             #this is the actual convolution
         return conv_out
   
-    def backprop(self,dL_dout, learning_rate): 
+    def back_prop(self,dL_dout, learning_rate): 
         '''
         #loss_gradient = dL_dout -- is the output of the MaxPooling Layer
+        # FOOBAR --- dL_dout -- is coming back in here as a PARAM by means of BACKPROPOGATION ...
+        # from further DownStream layer the MAXPOOL Layer
         '''
         dL_dF_params = np.zeros(self.conv_filter.shape) #loss_filters = dL_dF_params
         for image_patch, i, j in self.image_region(self.image): #last_input
@@ -100,7 +102,31 @@ for plt_cnt in range(2):
 
 
 
+class max_pool:
+    def __init__(self,filter_size):
+        self.filter_size = filter_size
 
+    def image_region(self, image):
+        new_h = image.shape[0]
+        new_w = image.shape[1]
+        #self.image = image # Not required ?? 
+        f_size = self.filter_size
+
+        for i in range(new_h):
+            for j in range(new_w):
+                image_patch = image[(i*f_size):(i*f_size + f_size),(j*f_size):(j*f_size + f_size)]
+                yield image_patch , i , j 
+    
+    def forward_prop(self , image):
+        height , width , num_filters = image.shape
+        output = np.zeros((height // self.filter_size , width // self.filter_size , num_filters))
+
+        for image_patch , i , j in self.image_region(image):
+            output[i,j] = np.amax(image_patch , axis = (0,1))
+
+        return output
+
+    def back_prop
 
 
 
@@ -112,7 +138,8 @@ for plt_cnt in range(2):
         
 # '''
 #     Much of the info contained after the convolution is redundant
-#     Example: we can find the same edge using an edge detecting filter by shifting 1 pixel from the first found edge location
+#     Example: we can find the same edge using an edge detecting filter 
+#  by shifting 1 pixel from the first found edge location
 # '''
 # class Pooling:
 #     def __init__(self):
