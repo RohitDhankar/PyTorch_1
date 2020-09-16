@@ -61,9 +61,8 @@ class Conv_class:
         #print(height) # 595 , #(595, 1176)
         #self.image = image # Not required ?? 
         
-        cdef int f_size
-
-        f_size = self.filter_size 
+        #cdef int f_size
+        cdef int f_size = self.filter_size 
         #print("Func = image_region , Filter Size---> ", f_size) #7
         #cntImgPatch = 0
 
@@ -127,6 +126,33 @@ for plt_cnt in range(2):
     plt.close()
 # FOOBAR_WIP -- Name the Plots so that they relate back to the Filters 
 # FOOBAR_WIP -- Try Not to use random Filters ?? 
+
+class max_pool:
+    def __init__(self,filter_size):
+        self.filter_size = filter_size
+
+    def image_region(self, image):
+        new_h = image.shape[0]
+        new_w = image.shape[1]
+        #self.image = image # Not required ?? 
+        f_size = self.filter_size
+
+        for i in range(new_h):
+            for j in range(new_w):
+                image_patch = image[(i*f_size):(i*f_size + f_size),(j*f_size):(j*f_size + f_size)]
+                yield image_patch , i , j 
+    
+    def forward_prop(self , image):
+        height , width , num_filters = image.shape
+        output = np.zeros((height // self.filter_size , width // self.filter_size , num_filters))
+
+        for image_patch , i , j in self.image_region(image):
+            output[i,j] = np.amax(image_patch , axis = (0,1))
+
+        return output
+
+    def back_prop
+
 
 
 
