@@ -105,6 +105,7 @@ class max_pool:
         self.filter_size = filter_size
 
     def image_region(self, image):
+        #print("image_region--image.shape---",image.shape) # (589, 1170, 18)
         new_h = image.shape[0]
         new_w = image.shape[1]
         #self.image = image # Not required ?? 
@@ -114,25 +115,35 @@ class max_pool:
         for i in range(new_h):
             for j in range(new_w):
                 image_patch = image[(i*f_size):(i*f_size + f_size),(j*f_size):(j*f_size + f_size)]
+                #print("-image_region---image_patch.shape---",image_patch.shape) 
+                #(8, 8, 18) #(4, 4, 18) ### The image_patch.shape - changes as we provide FIlter = 4 , 8 , 16 etc
                 yield image_patch , i , j 
     
     def forward_prop(self , image):
         f_size = self.filter_size
         #print("------f_size-------",f_size) #4
-        print("--image.shape---",image.shape) #(589, 1170, 18)
+        #print("--image.shape---",image.shape) #(589, 1170, 18)
         height , width , num_filters = image.shape
         output = np.zeros((height // f_size , width // f_size , num_filters))
         print("--output.shape---",output.shape) #(147, 292, 18)
 
         for image_patch , i , j in self.image_region(image):
             #print(type(image_patch)) #<class 'numpy.ndarray'>
-            #print(image_patch.shape) #(0, 0, 18)
+            #print(image_patch.shape) #(0, 0, 18) #
             #print(np.amax(image_patch , axis = (0,1))
-            output[i,j] = np.amax(image_patch, axis = (0,1)) 
+            #output[i,j] = np.amax(image_patch, axis = (0,1)) #IndexError: index 292 is out of bounds for axis 1 with size 292
+            output = np.amax(image_patch) #,axis = 1) ## ValueError: zero-size array to reduction operation maximum which has no identity
+            print(output.shape) 
+            
             #axis = (0,1) ,should get - height, width only
+            # with axis = 1 === (4,18) also (0,18)
+            # with axis = 1 === (4,18) Only
+            # with axis = NO AXIS === () Only
+            
             #FOR -- conn2 = max_pool(4)  --> IndexError: index 292 is out of bounds for axis 1 with size 292
             #FOR -- conn2 = max_pool(8)  --> IndexError: index 146 is out of bounds for axis 1 with size 146
-
+            #FOR -- conn2 = max_pool(16)  --> IndexError: index 73 is out of bounds for axis 1 with size 73
+            #FOR -- output[i,j] = np.amax(image_patch, axis = (1,2)) -- ValueError: could not broadcast input array from shape (4) into shape (18)
         return output
 
     def back_prop(self , dL_dout):
@@ -151,7 +162,7 @@ class max_pool:
                             dL_dmax_pool[i*f_size +i1, j*f_size +j1 ,k1] = dL_dout[i,j,k1]
             return dL_dmax_pool
 
-conn2 = max_pool(8) 
+conn2 = max_pool(4) 
 img_out2 = conn2.forward_prop(img_out1) 
 # img_out1 , the output of the - conn Class above 
 # this img_out1 had the shape == (589, 1170, 18) 
