@@ -118,16 +118,20 @@ class max_pool:
     
     def forward_prop(self , image):
         f_size = self.filter_size
+        #print("------f_size-------",f_size) #4
         print("--image.shape---",image.shape) #(589, 1170, 18)
         height , width , num_filters = image.shape
         output = np.zeros((height // f_size , width // f_size , num_filters))
         print("--output.shape---",output.shape) #(147, 292, 18)
 
         for image_patch , i , j in self.image_region(image):
+            #print(type(image_patch)) #<class 'numpy.ndarray'>
+            #print(image_patch.shape) #(0, 0, 18)
             #print(np.amax(image_patch , axis = (0,1))
             output[i,j] = np.amax(image_patch, axis = (0,1)) 
             #axis = (0,1) ,should get - height, width only
-            #IndexError: index 292 is out of bounds for axis 1 with size 292
+            #FOR -- conn2 = max_pool(4)  --> IndexError: index 292 is out of bounds for axis 1 with size 292
+            #FOR -- conn2 = max_pool(8)  --> IndexError: index 146 is out of bounds for axis 1 with size 146
 
         return output
 
@@ -147,7 +151,7 @@ class max_pool:
                             dL_dmax_pool[i*f_size +i1, j*f_size +j1 ,k1] = dL_dout[i,j,k1]
             return dL_dmax_pool
 
-conn2 = max_pool(4) 
+conn2 = max_pool(8) 
 img_out2 = conn2.forward_prop(img_out1) 
 # img_out1 , the output of the - conn Class above 
 # this img_out1 had the shape == (589, 1170, 18) 
