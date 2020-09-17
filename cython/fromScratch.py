@@ -108,6 +108,7 @@ class max_pool:
         #print("image_region--image.shape---",image.shape) # (589, 1170, 18)
         new_h = image.shape[0]
         new_w = image.shape[1]
+        #print("--maxPool-New-Width ===",new_w) #1170
         #self.image = image # Not required ?? 
         f_size = self.filter_size
         # Image patches that are extracted below , will be of Size - (new_h X new_w)
@@ -129,11 +130,12 @@ class max_pool:
 
         for image_patch , i , j in self.image_region(image):
             #print(type(image_patch)) #<class 'numpy.ndarray'>
-            #print(image_patch.shape) #(0, 0, 18) #
-            #print(np.amax(image_patch , axis = (0,1))
-            #output[i,j] = np.amax(image_patch, axis = (0,1)) #IndexError: index 292 is out of bounds for axis 1 with size 292
-            output = np.amax(image_patch) #,axis = 1) ## ValueError: zero-size array to reduction operation maximum which has no identity
-            print(output.shape) 
+            #print(image_patch.shape) #(4, 4, 18) == (filter_size, filter_size, 18)
+            #print(image_patch)
+            output[i,j] = np.amax(image_patch, axis = (0,1)) #IndexError: index 292 is out of bounds for axis 1 with size 292
+            #If this is a tuple of ints, the maximum is selected over multiple axes, instead of a single axis or all the axes as before.
+            #output = np.amax(image_patch) #,axis = 1) ## ValueError: zero-size array to reduction operation maximum which has no identity
+            #print(output.shape) 
             
             #axis = (0,1) ,should get - height, width only
             # with axis = 1 === (4,18) also (0,18)
@@ -162,7 +164,7 @@ class max_pool:
                             dL_dmax_pool[i*f_size +i1, j*f_size +j1 ,k1] = dL_dout[i,j,k1]
             return dL_dmax_pool
 
-conn2 = max_pool(4) 
+conn2 = max_pool(18) 
 img_out2 = conn2.forward_prop(img_out1) 
 # img_out1 , the output of the - conn Class above 
 # this img_out1 had the shape == (589, 1170, 18) 
