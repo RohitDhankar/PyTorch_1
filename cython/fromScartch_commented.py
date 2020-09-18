@@ -51,6 +51,10 @@ class Conv_class:
         for j in range(height - f_size +1):
             for k in range(width - f_size +1):
                 image_patch = image[j:(j+f_size), k:(k+f_size)]
+                #print(type(image_patch)) #<class 'numpy.ndarray'>
+                #print(image_patch.shape) # (7,7)
+                #cntImgPatch +=1
+                #print(cntImgPatch) # Last print == 6,89,130 
                 yield image_patch, j, k 
     
     def forward_prop(self, image):
@@ -83,7 +87,8 @@ class Conv_class:
         return dL_dF_params
 
 conn = Conv_class(18,7) # Count of Filters == 18 , Shape of Filters == 7 X 7 
-img_out1 = conn.forward_prop(img_input) #print(type(img_out1)) #<class 'numpy.ndarray'>
+img_out1 = conn.forward_prop(img_input)
+#print(type(img_out1)) #<class 'numpy.ndarray'>
 print(img_out1.shape) # (589, 1170, 18)
 
 # Done -- Loop through various plots - to see effect of Diff Filters
@@ -103,7 +108,7 @@ class max_pool:
         #print("image_region--image.shape---",image.shape) # (589, 1170, 18)
         new_h = image.shape[0] // self.filter_size
         new_w = image.shape[1] // self.filter_size
-        #print("--maxPool-New-Width ===",new_w) #
+        #print("--maxPool-New-Width ===",new_w) #1170
         self.image = image # Not required ?? 
         f_size = self.filter_size
         # Image patches that are extracted below , will be of Size - (new_h X new_w)
@@ -118,15 +123,32 @@ class max_pool:
     def forward_prop(self , image):
         f_size = self.filter_size
         #print("------f_size-------",f_size) #4
-        #print("--image.shape---",image.shape) #(589, 1170, 18) This input image.shape , doesnt alter with f_size
+        #print("--image.shape---",image.shape) 
+        #(589, 1170, 18) -- This is input image.shape , doesnt alter with f_size
         height , width , num_filters = image.shape
         output = np.zeros((height // f_size , width // f_size , num_filters))
-        #print("--output.shape---",output.shape) 
+        print("--output.shape---",output.shape) 
         # with f_size = 4 , output.shape == (147, 292, 18) 
         # with f_size = 18 , output.shape == (32, 65, 18)
 
         for image_patch , i , j in self.image_region(image):
-            output[i,j] = np.amax(image_patch, axis = (0,1)) 
+            #print(type(image_patch)) #<class 'numpy.ndarray'>
+            #print(image_patch.shape) #(4, 4, 18) == (filter_size, filter_size, 18)
+            #print(image_patch)
+            output[i,j] = np.amax(image_patch, axis = (0,1)) #IndexError: index 292 is out of bounds for axis 1 with size 292
+            #If this is a tuple of ints, the maximum is selected over multiple axes, instead of a single axis or all the axes as before.
+            #output = np.amax(image_patch) #,axis = 1) ## ValueError: zero-size array to reduction operation maximum which has no identity
+            #print(output.shape) 
+            
+            #axis = (0,1) ,should get - height, width only
+            # with axis = 1 === (4,18) also (0,18)
+            # with axis = 1 === (4,18) Only
+            # with axis = NO AXIS === () Only
+            
+            #FOR -- conn2 = max_pool(4)  --> IndexError: index 292 is out of bounds for axis 1 with size 292
+            #FOR -- conn2 = max_pool(8)  --> IndexError: index 146 is out of bounds for axis 1 with size 146
+            #FOR -- conn2 = max_pool(16)  --> IndexError: index 73 is out of bounds for axis 1 with size 73
+            #FOR -- output[i,j] = np.amax(image_patch, axis = (1,2)) -- ValueError: could not broadcast input array from shape (4) into shape (18)
         return output
 
     def back_prop(self , dL_dout):
@@ -147,13 +169,16 @@ class max_pool:
 
 conn2 = max_pool(4) 
 img_out2 = conn2.forward_prop(img_out1) 
-#print(img_out2.shape)
+# img_out1 , the output of the - conn Class above 
+# this img_out1 had the shape == (589, 1170, 18) 
+# It was giving us 17 Images , which were results of the RANDOM Filters??   
+print(img_out2.shape)
 
-# for plt_cnt in range(17):
-#     plt.imshow(img_out2[:,:,plt_cnt])
-#     plt.show(block=False)
-#     plt.pause(2)
-#     plt.close()
+for plt_cnt in range(17):
+    plt.imshow(img_out2[:,:,plt_cnt])
+    plt.show(block=False)
+    plt.pause(2)
+    plt.close()
 # FOOBAR_WIP -- Name the Plots so that they relate back to the Filters 
 # FOOBAR_WIP -- Try Not to use random Filters ?? 
 
