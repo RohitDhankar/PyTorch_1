@@ -1,3 +1,5 @@
+#conda activate pytorch_venv
+
 # -*- coding: utf-8 -*-
 """
 Neural Net from Scratch - WORK IN PROGRESS
@@ -16,11 +18,15 @@ import numpy as np
 #import albumentations as alb
 import random , cv2 
 
+from utils.utils_logger import setup_logger
+pytorch_logger = setup_logger(module_name='logs_pytorch', folder_name=str('pytorch_logs_dir'))
+
 img_input = cv2.imread('./img_inputs/dog.jpg',cv2.IMREAD_GRAYSCALE)/255
 #img = cv2.imread('../img_inputs/dog.jpg')#Not GrayScale
 plt.imshow(img_input,cmap = 'gray')
 #plt.show() # Gray Dog
 print(img_input.shape)#(595, 1176)
+pytorch_logger.info(f"-Logging --img_input.shape_>> : {str(img_input.shape)}")
 
 class Conv_class:
     def __init__(self, num_filters,filter_size):
