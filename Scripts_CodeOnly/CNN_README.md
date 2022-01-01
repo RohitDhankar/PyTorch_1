@@ -40,7 +40,14 @@
 - DIPANJAN SARKAR ( https://www.linkedin.com/in/dipanzan/ )
 
 
-
+## DIPANJAN SARKAR - 
+- Feature extraction -->> Conv Layer >> Conv Filter | Conv Kernels which will build further Feature Maps  
+- Pooling Layers -->> Reduce Dimensionality , this compression enhances specific aspects of these Feature Maps
+- RELU - Rectified Linear Units - Non Linear Activation functions 
+- Overfitting - Predictions on Training data are very good 
+- DropOut and BatchNormalization Layers - are used to prevent Overfitting
+- Fully Connected Layers -- used as final stage layers for Flattening and Predictions
+ 
 
 <br/>
 
