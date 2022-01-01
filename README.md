@@ -17,7 +17,7 @@
 - [X] `A-- Intro to PyTorch..conda install.` 
 - [X] `B-- Download and Preprocess various kinds of Data` 
 - [X] `C-- Further explorations PyTorch` 
-- [X] `D-- Work in Progress` 
+- [X] `D-- Convolution - CNN - see the CNN README.md linked below` 
 - [X] `E-- Work in Progress` 
 - [X] `Work in Progress` 
 - [X] `Work in Progress` 
@@ -34,7 +34,7 @@
 Whats PyTorch ? Why PyTorch ? some bits of theory before the Code :) 
 
 #
-- 1.
+- 1. Convolution - CNN - see the CNN README.md  - https://sentinel.esa.int/documents/247904/685211/Sentinel-2-Products-Specification-Document
 
 #
 

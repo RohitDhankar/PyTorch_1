@@ -1,3 +1,11 @@
+#https://docs.python.org/3/library/logging.html#levels
+#https://docs.python.org/3/library/logging.html#logging.Logger.setLevel
+#pytorch_log_cnfg_dict -- >> 
+#https://docs.python.org/3/howto/logging-cookbook.html#an-example-dictionary-based-configuration
+#https://docs.python.org/3/library/logging.handlers.html#rotatingfilehandler
+
+
+
 import os , logging 
 import logging.config
 from datetime import date
