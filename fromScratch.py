@@ -39,11 +39,9 @@ class Conv_class:
         Args:
             num_filters ([type]): [description]
             filter_size ([type]): [description]
-            filter_image ([type]): [description]
         """
         self.num_filters = num_filters 
         self.filter_size = filter_size
-        self.filter_image = 
         self.conv_filter = np.random.randn(num_filters,filter_size,filter_size)/(filter_size*filter_size)
         # self.filters = np.random.randn(num_filters, 3, 3) / 9 
         # self.last_input = None
