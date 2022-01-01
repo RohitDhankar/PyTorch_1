@@ -33,12 +33,17 @@ print("noChange_img_input.shape-->>" , noChange_img_input.shape)#(595, 1176 ,3)
 #pytorch_logger.info(f"-Logging --img_input.shape_>> : {str(img_input.shape)}")
 
 class Conv_class:
-    def __init__(self, num_filters,filter_size):
-        '''
-        num_filters,filter_size
-        '''
+    def __init__(self, num_filters,filter_size,filter_image):
+        """[summary]
+
+        Args:
+            num_filters ([type]): [description]
+            filter_size ([type]): [description]
+            filter_image ([type]): [description]
+        """
         self.num_filters = num_filters 
         self.filter_size = filter_size
+        self.filter_image = 
         self.conv_filter = np.random.randn(num_filters,filter_size,filter_size)/(filter_size*filter_size)
         # self.filters = np.random.randn(num_filters, 3, 3) / 9 
         # self.last_input = None
