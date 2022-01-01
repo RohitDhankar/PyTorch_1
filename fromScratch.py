@@ -1,13 +1,5 @@
 #conda activate pytorch_venv
-
-## Code Source >> https://github.com/teralion/explore-ml-cnn/blob/master/conv.py
-
 # -*- coding: utf-8 -*-
-"""
-Neural Net from Scratch - WORK IN PROGRESS
-MAIN CODE Source -- Prof Ahlad Kumar YouTube 
-Video -- https://www.youtube.com/watch?v=0zbhg79i_Bs
-"""
 import matplotlib.pyplot as plt
 import numpy as np
 #from PIL import Image
