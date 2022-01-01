@@ -32,8 +32,14 @@
 
 <br/>
 
-Recommended Further Learning - Reads / YouTube Vids etc 
-PROF.  AHLAD KUMAR - CNN -- Convolution Neural Nets for Image Processing https://www.youtube.com/watch?v=0zbhg79i_Bs&t=1112s
+- Recommended Further Learning - Reads / YouTube Vids etc 
+
+- PROF.  AHLAD KUMAR - CNN -- Convolution Neural Nets for Image Processing https://www.youtube.com/watch?v=0zbhg79i_Bs&t=1112s
+
+- DIPANJAN SARKAR --- Session on Convolutional Neural Networks (CNN)-- - https://www.youtube.com/watch?v=YyoSuP_aFN8&t=24s
+- DIPANJAN SARKAR ( https://www.linkedin.com/in/dipanzan/ )
+
+
 
 
 <br/>
