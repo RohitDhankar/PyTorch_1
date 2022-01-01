@@ -7,7 +7,7 @@ alexnet = models.AlexNet()
 resnet = models.resnet101(pretrained=True)
 #print(type(resnet)) #<class 'torchvision.models.resnet.ResNet'>
 #print(resnet)
-## FOOBAR_TBD - Give all - transforms - in ARGPARSE - 
+#TODO - Give all - transforms - in ARGPARSE - 
 
 from torchvision import transforms
 preprocess = transforms.Compose([

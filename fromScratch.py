@@ -6,12 +6,6 @@ Neural Net from Scratch - WORK IN PROGRESS
 MAIN CODE Source -- Prof Ahlad Kumar YouTube 
 Video -- https://www.youtube.com/watch?v=0zbhg79i_Bs
 """
-"""
-Speed up code with - Static Typing using cython 
-$ pip3 install cython
-Requirement already satisfied: cython in /home/dhankar/anaconda3/envs/pytorch_venv/lib/python3.8/site-packages (0.29.21)
-
-"""
 import matplotlib.pyplot as plt
 import numpy as np
 #from PIL import Image
@@ -19,14 +13,24 @@ import numpy as np
 import random , cv2 
 
 from utils.utils_logger import setup_logger
-pytorch_logger = setup_logger(module_name='logs_pytorch', folder_name=str('pytorch_logs_dir'))
+#pytorch_logger = setup_logger(module_name='logs_pytorch', folder_name=str('pytorch_logs_dir'))
 
-img_input = cv2.imread('./img_inputs/dog.jpg',cv2.IMREAD_GRAYSCALE)/255
-#img = cv2.imread('../img_inputs/dog.jpg')#Not GrayScale
-plt.imshow(img_input,cmap = 'gray')
-#plt.show() # Gray Dog
-print(img_input.shape)#(595, 1176)
-pytorch_logger.info(f"-Logging --img_input.shape_>> : {str(img_input.shape)}")
+gray_img_input = cv2.imread('./img_inputs/dog.jpg',cv2.IMREAD_GRAYSCALE)/255
+plt.imshow(gray_img_input)#,cmap = 'gray')
+plt.title("Gray--DogImage-with-cv2.IMREAD_GRAYSCALE-|  NO-->> cmap")
+plt.show() # Green Dog ?
+#
+plt.imshow(gray_img_input,cmap = 'gray')
+plt.title("Gray--DogImage-with-cv2.IMREAD_GRAYSCALE-|cmap =gray")
+plt.show() # GRAY Dog - OK
+print("gray_img_input.shape--->>" ,gray_img_input.shape)#(595, 1176 )
+#
+noChange_img_input = cv2.imread('./img_inputs/dog.jpg',cv2.IMREAD_UNCHANGED)
+plt.imshow(noChange_img_input)#,cmap = 'gray')
+plt.title("OriginalDogImage-with-cv2.IMREAD_UNCHANGED-| NO-->> cmap")
+plt.show() # Original Dog - OK
+print("noChange_img_input.shape-->>" , noChange_img_input.shape)#(595, 1176 ,3)
+#pytorch_logger.info(f"-Logging --img_input.shape_>> : {str(img_input.shape)}")
 
 class Conv_class:
     def __init__(self, num_filters,filter_size):
@@ -90,16 +94,20 @@ class Conv_class:
         return dL_dF_params
 
 conn = Conv_class(18,7) # Count of Filters == 18 , Shape of Filters == 7 X 7 
-img_out1 = conn.forward_prop(img_input)
+
+## OK_below_Uncomment_JAN22
+#img_out1 = conn.forward_prop(img_input)
 #print(type(img_out1)) #<class 'numpy.ndarray'>
-print(img_out1.shape) # (589, 1170, 18)
+#print(img_out1.shape) # (589, 1170, 18)
+
 
 # Done -- Loop through various plots - to see effect of Diff Filters
-for plt_cnt in range(17):
-    plt.imshow(img_out1[:,:,plt_cnt])
-    plt.show(block=False)
-    plt.pause(1)
-    plt.close()
+## OK_below_Uncomment_JAN22
+# for plt_cnt in range(17):
+#     plt.imshow(img_out1[:,:,plt_cnt])
+#     plt.show(block=False)
+#     plt.pause(1)
+#     plt.close()
 # FOOBAR_WIP -- Name the Plots so that they relate back to the Filters 
 # FOOBAR_WIP -- Try Not to use random Filters ?? 
 

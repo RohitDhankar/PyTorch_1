@@ -1,0 +1,4 @@
+_01_01_2022_12:22:14 - INFO - Py_Module_Name: fromScratch.py - Py_Method_Name: <module>() - Code_Line: 29 Logged_Message:  -Logging --img_input.shape_>> : (595, 1176)
+_01_01_2022_12:22:14 - INFO - Py_Module_Name: fromScratch.py - Py_Method_Name: <module>() - Code_Line: 29 Logged_Message:  -Logging --img_input.shape_>> : (595, 1176)
+_01_01_2022_12:30:18 - INFO - Py_Module_Name: fromScratch.py - Py_Method_Name: <module>() - Code_Line: 32 Logged_Message:  -Logging --img_input.shape_>> : (595, 1176)
+_01_01_2022_12:30:18 - INFO - Py_Module_Name: fromScratch.py - Py_Method_Name: <module>() - Code_Line: 32 Logged_Message:  -Logging --img_input.shape_>> : (595, 1176)
