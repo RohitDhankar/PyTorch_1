@@ -36,7 +36,7 @@
 
 - PROF.  AHLAD KUMAR - CNN -- Convolution Neural Nets for Image Processing https://www.youtube.com/watch?v=0zbhg79i_Bs&t=1112s
 
-
+<br/>
 
 
 ## DIPANJAN SARKAR - 
@@ -60,6 +60,16 @@
 - TODO - convolution stride 
 - TODO - SOURCE >> https://arxiv.org/pdf/1409.1556.pdf The image is passed through a stack of convolutional (conv.) layers, where we use filters with a very small receptive field: 3 × 3 (which is the smallest size to capture the notion of left/right, up/down, center) 
 - Next layer is the POOLING LAYER - this will Down Sample the  FEATURE MAPS 
+- ACTIVATION LAYER -- Non linearity and Back Propagation ( https://en.wikipedia.org/wiki/Backpropagation )
+- ReLU (Rectified Linear Unit) activation function -- https://en.wikipedia.org/wiki/Rectifier_(neural_networks) , RELU is better than SIGMOID 
+
+<br/>
+
+## ANDREW NG - 
+#### ACTIVATION FUNCTIONS - https://www.youtube.com/watch?v=NkOv_k7r6no 
+#### Link to Video Screencaptures - 
+
+- RELU - NON LINEAR ACTIVATION functions are required as when there are only LINEAR Activation functions in the hidden layers a Neural Net is alsmost the same as a sigmoid function and nothing more 
 - 
 
 <br/>
