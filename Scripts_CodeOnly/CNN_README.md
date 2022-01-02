@@ -87,9 +87,25 @@
 ### AUTHOR - NIKHIL BUDUMA 
 ### Link to Screencaptures FROM - Referred eBook - FUNDAMENTALS OF DEEP LEARNING 
 
+- layers of neurons that lie sandwiched between the first layer of neurons (input layer) and the last layer of neurons (output layer) are called the hidden layers.
+- every layer has the same number of neurons, this is neither necessary nor recommended.
+- It is not required that every neuron has its output connected to the inputs of all neurons in the next layer. In fact, selecting which neurons to connect to which other neurons in the next layer is an art that comes from experience.
+- In fact, it can be shown that any feed-forward neural network consisting of only linear neurons can be expressed as a network with no hidden layers.
+- in order to learn complex relationships, we need to use neurons that employ some sort of nonlinearity.
 - 
-- 
-- 
+-
+-
+
+
+
+<br/>
+
+## Source -- Rocket AI -- 2020Spring_15_NeuralNetworks_CNNs
+### AUTHOR - Rocket AI
+
+
+
+<br/>
 
 
 ```
