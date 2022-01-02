@@ -62,12 +62,18 @@
 - Next layer is the POOLING LAYER - this will Down Sample the  FEATURE MAPS 
 - ACTIVATION LAYER -- Non linearity and Back Propagation ( https://en.wikipedia.org/wiki/Backpropagation )
 - ReLU (Rectified Linear Unit) activation function -- https://en.wikipedia.org/wiki/Rectifier_(neural_networks) , RELU is better than SIGMOID 
+- COLORED IMAGE - will have the usual 3 CHANNELS -- RED | GREEN | BLUE -- RGB ( Refer Image - COLORED_IMAGE_3_Channels_Dipanjan )
+- GRAYSCALED IMAGE - will have only 1 Channel and HEIGHT AND WIDTH measures only 
+- 
+- 
 
 <br/>
 
 ## ANDREW NG - 
 #### ACTIVATION FUNCTIONS - https://www.youtube.com/watch?v=NkOv_k7r6no 
 #### Link to Video Screencaptures - https://github.com/RohitDhankar/PyTorch_1/tree/master/screenCaptures/ANDREW_NG_YouTubeVideo
+#### Why Non-linear Activation Functions (C1W3L07) -- https://www.youtube.com/watch?v=NkOv_k7r6no
+
 
 
 - RELU - NON LINEAR ACTIVATION functions are required as when there are only LINEAR Activation functions in the hidden layers a Neural Net is alsmost the same as a sigmoid function and nothing more 
@@ -75,6 +81,15 @@
 - 
 
 <br/>
+
+## Referred eBook - FUNDAMENTALS OF DEEP LEARNING 
+- https://www.amazon.in/Fundamentals-Deep-Learning-Nikhil-Buduma/dp/1491925612
+### AUTHOR - NIKHIL BUDUMA 
+### Link to Screencaptures FROM - Referred eBook - FUNDAMENTALS OF DEEP LEARNING 
+
+- 
+- 
+- 
 
 
 ```
