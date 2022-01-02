@@ -47,7 +47,16 @@
 - Overfitting - Predictions on Training data are very good 
 - DropOut and BatchNormalization Layers - are used to prevent Overfitting
 - Fully Connected Layers -- used as final stage layers for Flattening and Predictions
- 
+- CNN's have a Stacked Layer Acrhitecture - Layers are stacked on after another . Output from the previous layers is mostly the Input to the next layers 
+- CNN will have CONV LAyers and POOLING layers usually as alternating layers
+- One CONV Layer will have Multiple Filters | Kernels - the output of these Filters or Kernels is a Feature MAP 
+- The RAW IMAGE is divided into PATCHES of PIXELS - 1 patch could be a 3X3 Pixel Patch (9 PIXELS in Area - 3 LEN and 3 WIDTH)
+- All the FILTERS are passed over each PATCH of the IMAGE and for each FILTER passing on Each Patch we have a RESULT which is a DOT PRODUCT
+- Thus we will obtain FEATURE MAPS same count as we have FILTERS 
+- TODO - convolution stride 
+- TODO - SOURCE >> https://arxiv.org/pdf/1409.1556.pdf The image is passed through a stack of convolutional (conv.) layers, where we use filters with a very small receptive field: 3 × 3 (which is the smallest size to capture the notion of left/right, up/down, center) 
+- Next layer is the POOLING LAYER - this will Down Sample the  FEATURE MAPS 
+- 
 
 <br/>
 
