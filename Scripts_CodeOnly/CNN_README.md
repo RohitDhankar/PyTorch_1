@@ -67,9 +67,11 @@
 
 ## ANDREW NG - 
 #### ACTIVATION FUNCTIONS - https://www.youtube.com/watch?v=NkOv_k7r6no 
-#### Link to Video Screencaptures - 
+#### Link to Video Screencaptures - https://github.com/RohitDhankar/PyTorch_1/tree/master/screenCaptures/ANDREW_NG_YouTubeVideo
+
 
 - RELU - NON LINEAR ACTIVATION functions are required as when there are only LINEAR Activation functions in the hidden layers a Neural Net is alsmost the same as a sigmoid function and nothing more 
+- LINEAR ACTIVATION FUNCTIONS -  can be used in the LAST Layers when we have a REGRESSION problem . Like when predicting HOUSE PRICES which are on a continous scale --- $ 0 to $ Some million etc ... We can use a LINEAR ACTIVATION FUNCTION in the Last OutPut layer . 
 - 
 
 <br/>

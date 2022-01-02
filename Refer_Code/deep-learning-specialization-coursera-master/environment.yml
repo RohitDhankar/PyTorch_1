@@ -1,0 +1,24 @@
+name: test-env
+channels:
+  - conda-forge 
+dependencies:
+  - python=3.6
+  - numpy
+  - matplotlib
+  - scikit-learn
+  - importnb
+  - h5py 
+  - tensorflow
+  - scikit-image
+  - pytest
+  - black
+  - pytest-cov
+  - coverage
+  - flake8
+  - pathlib 
+  - nbconvert 
+  - nbformat 
+  - jupyter_client 
+  - ipykernel
+  - pip:
+    - version-information 
