@@ -36,11 +36,15 @@
 
 - PROF.  AHLAD KUMAR - CNN -- Convolution Neural Nets for Image Processing https://www.youtube.com/watch?v=0zbhg79i_Bs&t=1112s
 
-- DIPANJAN SARKAR --- Session on Convolutional Neural Networks (CNN)-- - https://www.youtube.com/watch?v=YyoSuP_aFN8&t=24s
-- DIPANJAN SARKAR ( https://www.linkedin.com/in/dipanzan/ )
+
 
 
 ## DIPANJAN SARKAR - 
+#### DIPANJAN SARKAR --- Session on Convolutional Neural Networks (CNN)-- - https://www.youtube.com/watch?v=YyoSuP_aFN8&t=24s
+- DIPANJAN SARKAR ( https://www.linkedin.com/in/dipanzan/ )
+#### Link to Video Screencaptures - 
+- https://github.com/RohitDhankar/PyTorch_1/tree/master/screenCaptures/Dipanjan_Sarkar_YouTubeVid
+- Below notes are sometimes verbatim - i have added my own inputs also 
 - Feature extraction -->> Conv Layer >> Conv Filter | Conv Kernels which will build further Feature Maps  
 - Pooling Layers -->> Reduce Dimensionality , this compression enhances specific aspects of these Feature Maps
 - RELU - Rectified Linear Units - Non Linear Activation functions 
