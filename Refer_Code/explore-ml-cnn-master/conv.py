@@ -1,3 +1,4 @@
+# conda activate pytorch_venv
 
 ## ## Code Source >> https://github.com/teralion/explore-ml-cnn/blob/master/conv.py
 ## ## Code Source -- CREDITS >> BORIS 

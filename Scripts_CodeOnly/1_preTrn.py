@@ -1,3 +1,5 @@
+# conda activate pytorch_venv
+
 # Pre Trained Networks 
 import torch 
 from torchvision import models

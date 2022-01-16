@@ -1,4 +1,6 @@
 
+# conda activate pytorch_venv
+
 ## ## Code Source >>  https://github.com/hiandersson/deep-dream-networks/blob/master/NeuralNetworks/Layers/pooling.py
 ## ## Code Source -- CREDITS >> hiandersson
 

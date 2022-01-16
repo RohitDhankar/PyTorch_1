@@ -1,4 +1,4 @@
-
+#conda activate pytorch_venv
 
 ## CODE SOURCE >> https://github.com/SiddharthKalla
 ## CODE SOURCE >> https://github.com/SiddharthKalla/neural_networks_scratch
