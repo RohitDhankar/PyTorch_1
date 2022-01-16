@@ -1,0 +1,274 @@
+SOURCE -->> https://towardsdatascience.com/learning-computer-vision-41398ad9941f
+
+Towards Data Science
+
+Learning computer vision - Romain Beaumont -- https://github.com/rom1504
+
+Romain Beaumont
+
+Nov 25, 2018·8 min read
+
+Recently I’ve been reading and experimenting a lot with computer vision, here is an introduction of what is interesting to learn and use in that domain.
+Image segmentation for autonomous driving
+
+Computer vision has advanced a lot in recent years. Those are the topics I will mention here :
+
+Technologies :
+
+    Face detection : Haar, HOG, MTCNN, Mobilenet
+    Face recognition : CNN, Facenet
+    Object recognition : alexnet, inceptionnet, resnet
+    Transfer learning : re-training big neural network with little resources on a new topic
+    Image segmentation : rcnn
+    GAN
+    Hardware for computer vision : what to choose, GPU is important
+    UI apps integrating vision : ownphotos
+
+Applications :
+
+    personal photos organization
+    autonomous cars
+    autonomous drones
+    solving captcha / OCR
+    filtering pictures for a picture based website/app
+    automatically tagging pictures for an app
+    extraction information from videos (tv show, movies)
+    visual question answering
+    art
+
+People to follow :
+
+    important deep learning founders : andrew ng, yann lecun, bengio yoshua, hinton joffrey
+    adam geitgey https://medium.com/@ageitgey has a lot of interesting articles on vision such as https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78 with a full face detection/alignment/recognition pipeline
+
+Courses :
+
+    deep learning @ coursera
+    machine learning @ coursera
+
+Related fields :
+
+    deep reinforcement learning : see ppo and dqn with a cnn as input layer
+    interaction with nlp : lstm 2 cnn
+
+Face detection
+Face detection is about placing boxes around faces
+
+Face detection is the task of detecting faces. There are several algorithms to do that.
+
+https://github.com/nodefluxio/face-detector-benchmark provide a benchmark on the speed of these method, with easy to reuse implementation code.
+Haar classifiers
+haar features
+
+They are the old computer vision method present in opencv since 2000. It was introduced in this paper http://wearables.cc.gatech.edu/paper_of_week/viola01rapid.pdf.
+
+It is a machine learning model with features chosen specifically for object detection. Haar classifiers are fast but have a low accuracy.
+
+See a longer explanation and an example on how to use it in https://docs.opencv.org/3.4.3/d7/d8b/tutorial_py_face_detection.html
+HOG : Histogram of Oriented Gradients
+Histogram of oriented gradients
+
+HOG is a newer method to generate feature for object detection: it has started being used since 2005. It is based on computing gradients on the pixel of your images. These features are then fed to a machine learning algorithm, for example SVM. It has a better precision than haar classifiers.
+
+An implementation of that is in dlib. Which is in the face_recognition (https://github.com/ageitgey/face_recognition) lib.
+MTCNN
+
+A new method using a variation on CNNs to detect images. Better precision but a bit slower. See https://kpzhang93.github.io/MTCNN_face_detection_alignment/index.html
+MobileNet
+
+The best and fastest method these days for face detection. Based on the general mobile net architecture. See https://arxiv.org/abs/1704.04861
+Object detection
+Object detection on many kind of objects
+
+Object detection can be achieved using similar methods than face detection.
+
+Here are 2 articles presenting recent methods to achieve it. These methods sometimes even provide the class of objects too (achieving object recognition) :
+
+    https://towardsdatascience.com/review-r-fcn-positive-sensitive-score-maps-object-detection-91cd2389345c r-fcn
+    https://towardsdatascience.com/r-cnn-fast-r-cnn-faster-r-cnn-yolo-object-detection-algorithms-36d53571365e a comparison of r-cnn, fast r-cnn, faster r-cnn and yolo
+
+Convolutional neural networks
+
+Recent progress in deep learning has seen new architectures achieving a lot of success.
+
+Neural networks using many convolution layers are one of them. A convolution layer takes advantage of the 2D structure of an image to generate useful information in the next layer of the neural network. See https://towardsdatascience.com/intuitively-understanding-convolutions-for-deep-learning-1f6f42faee1 for a detailed explanation of what is a convolution.
+A convolution layer
+Object recognition
+
+Object recognition is the general problem of classifying object into categories (such as cat, dog, …)
+
+Deep neural network based on convolution have been used to achieve great results on this task.
+
+The ILSVR conference has been hosting competition on the ImageNet (http://www.image-net.org/ a database of many images with in objects tags such as cat, dog,..)
+
+The more successful neural networks have been using more and more layer.
+
+The ResNet architecture is the best to classify object to date.
+Resnet architecture
+
+To train it properly, it is needed to use millions of images, and it takes a lot of time even with tens of expensive GPUs.
+
+That’s the reason why methods that don’t require retraining every time on such big datasets are very useful. Transfer learning and embeddings are such methods.
+
+Pretrained models for resnet are available in https://github.com/tensorflow/tensor2tensor#image-classification
+Face recognition
+
+Face recognition is about figuring out who is a face.
+Historic methods
+
+The historic way to solve that task has been to apply either feature engineering with standard machine learning (for example svm) or to apply deep learning methods for object recognition.
+
+The problem with these approaches is they require a lot of data for each person. In practice that data is not always available.
+Facenet
+
+Facenet has been introduced by google researchers in 2015 https://arxiv.org/abs/1503.03832. It proposes a method to recognize faces without having a lot of faces sample for each person.
+
+The way it works is by taking a dataset of pictures (such as http://vis-www.cs.umass.edu/lfw/) of a large number of faces.
+
+Then taking an existing computer vision architecture such as inception (or resnet) then replacing the last layer of an object recognition NN with a layer that computes a face embedding.
+
+For each person in the dataset, (negative sample, positive sample, second positive sample) triple of faces are selected (using heuristics) and fed to the neural network. That produces 3 embeddings. On these 3 embeddings the triplet loss is computed, which minimizes the distance between the positive sample and any other positive sample, and maximizes the distance between the position sample and any other negative sample.
+Image result for triplet loss
+Triplet loss
+
+The end result is each face (even faces not present in the original training set) can now be represented as an embedding (a vector of 128 number) that has a big distance from embeddings of faces of other people.
+
+These embeddings can then be used with any machine learning model (even simple ones such as knn) to recognize people.
+
+The thing that is very interesting about facenet and face embeddings is that using it you can recognize people with only a few pictures of them or even a single one.
+
+See that lib implementing it : https://github.com/ageitgey/face_recognition
+
+That’s a tensorflow implementation of it : https://github.com/davidsandberg/facenet
+
+This is a cool application of the ideas behind this face recognition pipeline to instead recognize bears faces : https://hypraptive.github.io/2017/01/21/facenet-for-bears.html
+Transfer learning
+Retrain quickly an accurate neural network on a custom dataset
+
+Training very deep neural network such as resnet is very resource intensive and requires a lot of data.
+
+Computer vision is highly computation intensive (several weeks of trainings on multiple gpu) and requires a lot of data. To remedy to that we already talked about computing generic embeddings for faces. Another way to do it is to take an existing network and retraining only a few of its it layers on another dataset.
+
+Here is a tutorial for it : codelab tutorial . It proposes to you to retrain an inception model to train unknown to it classes of flowers.
+
+https://medium.com/@14prakash/transfer-learning-using-keras-d804b2e04ef8 presents good guidelines on which layer to retrain when doing transfer learning.
+Image segmentation
+Image segmentation for autonomous driving
+
+Image segmentation is an impressive new task that has become possible in recent years. It consists in identifying every pixel of an image.
+
+This task is related with object detection. One algorithm to achieve it is mask r-cnn, see this article for more details https://medium.com/@jonathan_hui/image-segmentation-with-mask-r-cnn-ebe6d793272
+GAN
+Large scale GAN
+
+Generative Adversial Networks, introduced by ian goodfellow, is a neural network architecture in 2 parts : a discriminator and a generator.
+
+    The discriminator detects whether a picture is a class, it has usually been pretrained on a object classification dataset.
+    The generator produces an image for a given class
+
+The weight of the generator are adapted during learning in order to produces images the discriminator cannot distinguish from real images of that class.
+
+Here is an example of images produced by the largest GAN yet https://arxiv.org/abs/1809.11096
+
+See an implementation of GAN in keras at https://github.com/eriklindernoren/Keras-GAN
+Hardware for computer vision
+
+To train big models, a lot of resources is required. There are two way to achieve that. The first is to use cloud services, such as google cloud or aws. The second way is to build a computer with GPU yourself.
+
+With as little as 1000$ it’s possible to build a decent machine to train deep learning models.
+
+Read this more in detail in https://hypraptive.github.io/2017/02/13/dl-computer-build.html
+Vision in UI
+Face dashboard of ownphotos
+
+Ownphotos is an amazing UI allowing you to import your photos and automatically computing face embeddings, doing object recognition and recognizing faces.
+
+It uses :
+
+    Face recognition: face_recognition
+    Object detection: densecap, places365
+
+Applications
+Visual question answering
+
+Computer vision have many applications :
+
+    personal photos organization
+    autonomous cars
+    autonomous drones
+    solving captcha / OCR
+    filtering pictures for a picture based website/app
+    automatically tagging pictures for an app
+    extraction information from videos (tv show, movies)
+    visual question answering : combining NLP and Computer Vision
+    art : GAN
+
+Conclusion
+
+As we have seen here, there are many new interesting methods and applications resulting of their success.
+
+I think what is the most interesting in AI in general and in vision in particular is learning algorithm that can be reused, to be able to apply these methods to more and more tasks without requiring as much processing power and data :
+
+    transfer learning : it makes it possible to repurpose pretrained big neural networks
+    embeddings (facenet for example) : makes it possible to recognize many classes without training on any of these classes
+
+Romain Beaumont
+
+Machine learning engineer interested in representation learning, computer vision, natural language processing and programming (distributed systems, algorithms)
+Follow
+Romain Beaumont Follows
+
+    Sik-Ho Tsang
+    Sik-Ho Tsang
+    TDS Editors
+    TDS Editors
+    Olivier Koch
+    Olivier Koch
+    Jonathan Hui
+    Jonathan Hui
+    Michael Galkin
+    Michael Galkin
+
+See all (77)
+
+Sign up for The Variable
+By Towards Data Science
+
+Every Thursday, the Variable delivers the very best of Towards Data Science: from hands-on tutorials and cutting-edge research to original features you don't want to miss. Take a look.
+
+    Machine Learning
+    Computer Vision
+    Deep Learning
+    Face Recognition
+    Embedding
+
+More from Towards Data Science
+Follow
+
+Your home for data science. A Medium publication sharing concepts, ideas and codes.
+Read more from Towards Data Science
+More From Medium
+How To Evaluate Your Machine Learning Models? — Classification Evaluation Metrics
+Grace Zhang
+Low-key ML packages in R
+Vedant Kumar
+Diagnosing Pneumonia with Transfer Learning
+Jack Risse
+Building a Text Generator based on the most influential authors in the r/Siacoin…
+Slaps Lab
+Practical Aspects of Deep Learning
+Fezan
+Turbocharging SVD with JAX
+Zichen Wang in Towards Data Science
+What is Double Loop Learning?
+Patrick Stewart in Patrick’s Portfolio
+Machine Learning Course In Delhi Trends to Watch Out for in 2020.
+Manju Lohia
+
+About
+
+Write
+
+Help
+
+Legal
