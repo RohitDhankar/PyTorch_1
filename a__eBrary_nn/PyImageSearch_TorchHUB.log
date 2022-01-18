@@ -1,0 +1,1728 @@
+
+############ FOOBAR----Training an object detector from scratch in PyTorch
+
+SOURCE -->> https://www.pyimagesearch.com/2021/11/01/training-an-object-detector-from-scratch-in-pytorch/
+
+
+Torch Hub Series #1: Introduction to Torch Hub
+SOURCE -->> https://www.pyimagesearch.com/2021/12/20/torch-hub-series-1-introduction-to-torch-hub/
+
+https://www.pyimagesearch.com/2022/01/17/torch-hub-series-5-midas-model-on-depth-estimation/
+
+https://www.pyimagesearch.com/2021/12/27/torch-hub-series-2-vgg-and-resnet/
+
+https://www.pyimagesearch.com/2022/01/03/torch-hub-series-3-yolov5-and-ssd-models-on-object-detection/
+
+
+
+Deep Learning PyTorch Tutorials
+Torch Hub Series #1: Introduction to Torch Hub
+
+by Devjyoti Chakraborty on December 20, 2021
+Click here to download the source code to this post
+
+In this tutorial, you will learn the basics of PyTorch’s Torch Hub.
+
+This lesson is part 1 of a 6-part series on Torch Hub:
+
+    Torch Hub Series #1: Introduction to Torch Hub (this tutorial)
+    Torch Hub Series #2: VGG and ResNet
+    Torch Hub Series #3: YOLO v5 and SSD — Models on Object Detection
+    Torch Hub Series #4: PGAN — Model on GAN
+    Torch Hub Series #5: MiDaS — Model on Depth Estimation
+    Torch Hub Series #6: Image Segmentation
+
+To learn how to use Torch Hub, just keep reading.
+
+Looking for the source code to this post?
+Jump Right To The Downloads Section
+
+Introduction to Torch Hub
+
+It was 2020 when my friends and I worked night and day to finish our final year project. Like most students in our year, we decided it was a good idea to leave it till the very end.
+
+That wasn’t the brightest idea from our end. What followed were neverending nights of constant model calibration and training, burning through gigabytes of cloud storage, and maintaining records for deep learning model results.
+
+The environment that we had created for ourselves did not only harm our efficiency, but it affected our morale. Due to the sheer individual brilliance of my other teammates, we managed to complete our project.
+
+In retrospect, I realized how much more efficient our work could have been — and so much more enjoyable — had we chosen a better ecosystem to work in.
+
+Fortunately, you don’t have to make the same mistakes I made.
+
+The creators of PyTorch often emphasized that a key intention behind this initiative is to bridge the gap between research and production. PyTorch now stands toe to toe with its contemporaries on many fronts, being utilized equally in both research and production ecosystems.
+
+One of the ways they’ve achieved this is through Torch Hub. Torch Hub as a concept was conceived to further extend PyTorch’s credibility as a production-based framework. In today’s tutorial, we’ll learn how to utilize Torch Hub to store and publish pre-trained models for wide-scale use.
+What Is Torch Hub?
+
+In Computer Science, many believe that a key puzzle piece in the bridge between research and production is reproducibility. Building on that very notion, PyTorch introduced Torch Hub, an Application Programmable Interface (API), which allows two programs to interact with each other and enhances the workflow for easy research reproducibility.
+
+Torch Hub lets you publish pre-trained models to help in the cause of research sharing and reproducibility. The process of harnessing Torch Hub is simple, but before moving further, let’s configure the prerequisites of our system!
+Configuring Your Development Environment
+
+To follow this guide, you need to have the OpenCV library installed on your system.
+
+Luckily, OpenCV is pip-installable:
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+$ pip install opencv-contrib-python
+
+If you need help configuring your development environment for OpenCV, I highly recommend that you read our pip install OpenCV guide — it will have you up and running in a matter of minutes.
+Having Problems Configuring Your Development Environment?
+Figure 1: Having trouble configuring your dev environment? Want access to pre-configured Jupyter Notebooks running on Google Colab? Be sure to join PyImageSearch University — you’ll be up and running with this tutorial in a matter of minutes.
+
+All that said, are you:
+
+    Short on time?
+    Learning on your employer’s administratively locked system?
+    Wanting to skip the hassle of fighting with the command line, package managers, and virtual environments?
+    Ready to run the code right now on your Windows, macOS, or Linux system?
+
+Then join PyImageSearch University today!
+
+Gain access to Jupyter Notebooks for this tutorial and other PyImageSearch guides that are pre-configured to run on Google Colab’s ecosystem right in your web browser! No installation required.
+
+And best of all, these Jupyter Notebooks will run on Windows, macOS, and Linux!
+Project Structure
+
+We first need to review our project structure.
+
+Start by accessing the “Downloads” section of this tutorial to retrieve the source code and example images.
+
+Before moving to the directory, let’s take a look at the project structure in Figure 2.
+Figure 2: Project Overview.
+
+Today, we’ll be working with two directories. This is to help you better understand the use of Torch Hub.
+
+The subdirectory is where we’ll initialize and train our model. Here, we’ll create a hubconf.py
+script. The hubconf.py
+script contains callable functions called entry_points
+. These callable functions initialize and return the models which the user requires. Hence, this script will connect our own created model to Torch Hub.
+
+In our main Project Directory, we’ll be using torch.hub.load
+to load our model from Torch Hub. After loading the model with pre-trained weights, we’ll evaluate it on some sample data.
+A Generalized Outlook on Torch Hub
+
+Torch Hub already hosts an array of models for various tasks, as seen in Figure 3.
+Figure 3: A glimpse of Torch Hub’s hosted Models.
+
+As you can see, there are a total of 42 research models that Torch Hub has accepted in its official showcase. Each model belongs to one or more of the following labels: Audio, Generative, Natural Language Processing (NLP), scriptable, and vision. These models have also been trained on widely accepted benchmark datasets (e.g., Kinetics 400 and COCO 2017).
+
+It’s easy to use these models in your projects using the torch.hub.load
+function. Let’s look at an example of how it works.
+
+We’ll look at Torch Hub’s official documentation of using a DCGAN trained on fashion-gen to generate some images.
+
+(If you want to know more about DCGANs, do check out this blog.)
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+# USAGE
+# python inference.py
+# import the necessary packages
+import matplotlib.pyplot as plt
+import torchvision
+import argparse
+import torch
+# construct the argument parser and parse the arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("-n", "--num-images", type=int, default=64,
+	help="# of images you want the DCGAN to generate")
+args = vars(ap.parse_args())
+# check if gpu is available for use
+useGpu = True if torch.cuda.is_available() else False
+# load the DCGAN model
+model = torch.hub.load("facebookresearch/pytorch_GAN_zoo:hub", "DCGAN",
+	pretrained=True, useGPU=useGpu)
+
+On Lines 11-14, we created an argument parser to give the user more freedom to choose the batch size of generated images.
+
+To use the Facebook Research pretrained DCGAN model, we just need the torch.hub.load
+function as shown on Lines 20 and 21. The torch.hub.load
+function here takes in the following arguments:
+
+    repo_or_dir
+    : The repository name in the format repo_owner/repo_name:branch/tag_name
+    if the source
+    argument is set to github
+    . Otherwise, it will point to the desired path in your local machine.
+    entry_point
+    : To publish a model in torch hub, you need to have a script called hubconf.py
+    in your repository/directory. In that script, you’ll define normal callable functions known as entry points. Calling the entry points to return the desired models. You’ll learn more about entry_point
+    later in this blog.
+    pretrained
+    and useGpu
+    : These fall under the *args
+    or the arguments banner of this function. These arguments are for the callable model.
+
+Now, this isn’t the only major function Torch Hub offers. You can use several other notable functions like torch.hub.list
+to list all available entry points (callable functions) belonging to the repository, and torch.hub.help
+to show the documentation docstring of the target entry point.
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+# generate random noise to input to the generator
+(noise, _) = model.buildNoiseData(args["num_images"])
+# turn off autograd and feed the input noise to the model
+with torch.no_grad():
+	generatedImages = model.test(noise)
+# reconfigure the dimensions of the images to make them channel 
+# last and display the output
+output = torchvision.utils.make_grid(generatedImages).permute(
+	1, 2, 0).cpu().numpy()
+plt.imshow(output)
+plt.show()
+
+On Line 24, we use a function exclusive to the called model named buildNoiseData
+to generate random input noise, keeping the input size in mind.
+
+Turning off automatic gradients (Line 27), we generate images by feeding the noise to the model.
+
+Before plotting the images, we do a dimensional re-shaping of the images on Lines 32-35 (since PyTorch works with channel first tensors, we need to make them channel last again). The output will look like Figure 4.
+Figure 4: DCGAN output.
+
+Voila! This is all you need to use a pre-trained state-of-the-art DCGAN model for your purposes. Using the pre-trained models in Torch Hub is THAT easy. However, we are not stopping there, are we?
+
+Calling a pre-trained model to see how the latest state-of-the-art research performs is fine, but what about when we produce state-of-the-art results using our research? For that, we’ll next learn how to publish our own created models on Torch Hub.
+Using Torch Hub on Your PyTorch Models
+
+Let’s take a trip down memory lane to July 12, 2021, when Adrian Rosebrock released a blog post that taught you how to build a simple 2-layered neural network on PyTorch. The blog taught you to define your own simple neural networks, and train and test them on user-generated data.
+
+Today, we’ll train our simple neural network and publish it using Torch Hub. I will not go into a full dissection of the code since a tutorial for that already exists. For a detailed and precise dive into building a simple neural network, refer to this blog.
+Building a Simple Neural Network
+
+Next, we’ll go through the salient parts of the code. For that, we’ll be moving into the subdirectory. First, let’s build our simple neural network in mlp.py
+!
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+# import the necessary packages
+from collections import OrderedDict
+import torch.nn as nn
+# define the model function
+def get_training_model(inFeatures=4, hiddenDim=8, nbClasses=3):
+	# construct a shallow, sequential neural network
+	mlpModel = nn.Sequential(OrderedDict([
+		("hidden_layer_1", nn.Linear(inFeatures, hiddenDim)),
+		("activation_1", nn.ReLU()),
+		("output_layer", nn.Linear(hiddenDim, nbClasses))
+	]))
+	# return the sequential model
+	return mlpModel
+
+The get_training_model
+function on Line 6 takes in parameters (input size, hidden layer size, output classes). Inside the function, we use nn.Sequential
+to create a 2-layered neural network, consisting of a single hidden layer with ReLU activator and an output layer (Lines 8-12).
+Training the Neural Network
+
+We won’t be using any external dataset to train the model. Instead, we’ll generate data points ourselves. Let’s hop into train.py
+.
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+# import the necessary packages
+from pyimagesearch import mlp
+from torch.optim import SGD
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import make_blobs
+import torch.nn as nn
+import torch
+import os
+# define the path to store your model weights
+MODEL_PATH = os.path.join("output", "model_wt.pth")
+# data generator function
+def next_batch(inputs, targets, batchSize):
+    # loop over the dataset
+	for i in range(0, inputs.shape[0], batchSize):
+		# yield a tuple of the current batched data and labels
+		yield (inputs[i:i + batchSize], targets[i:i + batchSize])
+# specify our batch size, number of epochs, and learning rate
+BATCH_SIZE = 64
+EPOCHS = 10
+LR = 1e-2
+# determine the device we will be using for training
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+print("[INFO] training using {}...".format(DEVICE))
+
+First, we create a path to save the trained model weights on Line 11, which will be used later. The next_batch
+function on Lines 14-18 will act as the data generator for our project, yielding batches of data for efficient training.
+
+Next, we set up hyperparameters (Lines 21-23) and set our DEVICE
+to cuda
+if a compatible GPU is available (Line 26).
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+# generate a 3-class classification problem with 1000 data points,
+# where each data point is a 4D feature vector
+print("[INFO] preparing data...")
+(X, y) = make_blobs(n_samples=1000, n_features=4, centers=3,
+	cluster_std=2.5, random_state=95)
+# create training and testing splits, and convert them to PyTorch
+# tensors
+(trainX, testX, trainY, testY) = train_test_split(X, y,
+	test_size=0.15, random_state=95)
+trainX = torch.from_numpy(trainX).float()
+testX = torch.from_numpy(testX).float()
+trainY = torch.from_numpy(trainY).float()
+testY = torch.from_numpy(testY).float()
+
+On Lines 32 and 33, we use the make_blobs
+function to mimic data points of an actual three-class dataset. Using scikit-learn’s train_test_split
+function, we create the training and test splits of the data.
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+# initialize our model and display its architecture
+mlp = mlp.get_training_model().to(DEVICE)
+print(mlp)
+# initialize optimizer and loss function
+opt = SGD(mlp.parameters(), lr=LR)
+lossFunc = nn.CrossEntropyLoss()
+# create a template to summarize current training progress
+trainTemplate = "epoch: {} test loss: {:.3f} test accuracy: {:.3f}"
+
+On Line 45, we call the get_training_model
+function from the mlp.py
+module and initialize the model.
+
+We choose stochastic gradient descent as the optimizer (Line 49) and Cross-Entropy loss as the loss function (Line 50).
+
+The trainTemplate
+variable on Line 53 will act as a string template to print accuracy and loss.
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+# loop through the epochs
+for epoch in range(0, EPOCHS):
+	# initialize tracker variables and set our model to trainable
+	print("[INFO] epoch: {}...".format(epoch + 1))
+	trainLoss = 0
+	trainAcc = 0
+	samples = 0
+	mlp.train()
+	# loop over the current batch of data
+	for (batchX, batchY) in next_batch(trainX, trainY, BATCH_SIZE):
+		# flash data to the current device, run it through our
+		# model, and calculate loss
+		(batchX, batchY) = (batchX.to(DEVICE), batchY.to(DEVICE))
+		predictions = mlp(batchX)
+		loss = lossFunc(predictions, batchY.long())
+		# zero the gradients accumulated from the previous steps,
+		# perform backpropagation, and update model parameters
+		opt.zero_grad()
+		loss.backward()
+		opt.step()
+		# update training loss, accuracy, and the number of samples
+		# visited
+		trainLoss += loss.item() * batchY.size(0)
+		trainAcc += (predictions.max(1)[1] == batchY).sum().item()
+		samples += batchY.size(0)
+	# display model progress on the current training batch
+	trainTemplate = "epoch: {} train loss: {:.3f} train accuracy: {:.3f}"
+	print(trainTemplate.format(epoch + 1, (trainLoss / samples),
+		(trainAcc / samples)))
+
+Looping over the training epochs, we initialize the losses (Lines 59-61) and set the model to training mode (Line 62).
+
+Using the next_batch
+function, we iterate through batches of training data (Line 65). After loading them to the device (Line 68), the predictions for the data batch are obtained on Line 69. These predictions are then fed to the loss function for loss calculation (Line 70).
+
+The gradients are flushed using zero_grad
+(Line 74), followed by backpropagation on Line 75. Finally, the optimizer parameter is updated on Line 76.
+
+For each epoch, the training loss, accuracy, and sample size variables are upgraded (Lines 80-82) and displayed using the template on Line 85.
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+	# initialize tracker variables for testing, then set our model to
+	# evaluation mode
+	testLoss = 0
+	testAcc = 0
+	samples = 0
+	mlp.eval()
+	# initialize a no-gradient context
+	with torch.no_grad():
+		# loop over the current batch of test data
+		for (batchX, batchY) in next_batch(testX, testY, BATCH_SIZE):
+			# flash the data to the current device
+			(batchX, batchY) = (batchX.to(DEVICE), batchY.to(DEVICE))
+			# run data through our model and calculate loss
+			predictions = mlp(batchX)
+			loss = lossFunc(predictions, batchY.long())
+			# update test loss, accuracy, and the number of
+			# samples visited
+			testLoss += loss.item() * batchY.size(0)
+			testAcc += (predictions.max(1)[1] == batchY).sum().item()
+			samples += batchY.size(0)
+		# display model progress on the current test batch
+		testTemplate = "epoch: {} test loss: {:.3f} test accuracy: {:.3f}"
+		print(testTemplate.format(epoch + 1, (testLoss / samples),
+			(testAcc / samples)))
+		print("")
+# save model to the path for later use
+torch.save(mlp.state_dict(), MODEL_PATH)
+
+We set the model to eval
+mode for model evaluation and do the same during the training phase, except for backpropagation.
+
+On Line 121, we have the most important step of saving the model weights for later use.
+
+Let’s assess the epoch-wise performance of our model!
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+[INFO] training using cpu...
+[INFO] preparing data...
+Sequential(
+  (hidden_layer_1): Linear(in_features=4, out_features=8, bias=True)
+  (activation_1): ReLU()
+  (output_layer): Linear(in_features=8, out_features=3, bias=True)
+)
+[INFO] epoch: 1...
+epoch: 1 train loss: 0.798 train accuracy: 0.649
+epoch: 1 test loss: 0.788 test accuracy: 0.613
+[INFO] epoch: 2...
+epoch: 2 train loss: 0.694 train accuracy: 0.665
+epoch: 2 test loss: 0.717 test accuracy: 0.613
+[INFO] epoch: 3...
+epoch: 3 train loss: 0.635 train accuracy: 0.669
+epoch: 3 test loss: 0.669 test accuracy: 0.613
+...
+[INFO] epoch: 7...
+epoch: 7 train loss: 0.468 train accuracy: 0.693
+epoch: 7 test loss: 0.457 test accuracy: 0.740
+[INFO] epoch: 8...
+epoch: 8 train loss: 0.385 train accuracy: 0.861
+epoch: 8 test loss: 0.341 test accuracy: 0.973
+[INFO] epoch: 9...
+epoch: 9 train loss: 0.286 train accuracy: 0.980
+epoch: 9 test loss: 0.237 test accuracy: 0.993
+[INFO] epoch: 10...
+epoch: 10 train loss: 0.211 train accuracy: 0.985
+epoch: 10 test loss: 0.173 test accuracy: 0.993
+
+Since we are training on data generated by paradigms we set, our training process went smoothly, reaching a final training accuracy of 0.985.
+Configuring the hubconf.py script
+
+With model training complete, our next step is to configure the hubconf.py
+file in the repo to make our model accessible through Torch Hub.
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+# import the necessary packages
+import torch
+from pyimagesearch import mlp
+# define entry point/callable function 
+# to initialize and return model
+def custom_model():
+	""" # This docstring shows up in hub.help()
+	Initializes the MLP model instance
+	Loads weights from path and
+	returns the model
+	"""
+	# initialize the model
+	# load weights from path
+	# returns model
+	model = mlp.get_training_model()
+	model.load_state_dict(torch.load("model_wt.pth"))
+	return model
+
+As mentioned earlier, we have created an entry point called custom_model
+on Line 7. Inside the entry_point
+, we initialize the simple neural network from the mlp.py
+module (Line 16). Next, we load the weights we previously saved (Line 17). This current setup is made such that this function will look for the model weights in your project directory. You can host the weights on a cloud platform and choose the path accordingly.
+
+Now, we’ll use Torch Hub to access this model and test it on our data.
+Using torch.hub.load to Call Our Model
+
+Coming back to our main project directory, let’s hop into the hub_usage.py
+script.
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+# USAGE
+# python hub_usage.py
+# import the necessary packages
+from pyimagesearch.data_gen import next_batch
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import make_blobs
+import torch.nn as nn
+import argparse
+import torch
+# construct the argument parser and parse the arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("-b", "--batch-size", type=int, default=64,
+	help="input batch size")
+args = vars(ap.parse_args())
+
+After importing the necessary packages, we create an argument parser (Lines 13-16) for the user to input the batch size for the data.
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+# load the model using torch hub
+print("[INFO] loading the model using torch hub...")
+model = torch.hub.load("cr0wley-zz/torch_hub_test:main",
+	"custom_model")
+# generate a 3-class classification problem with 1000 data points,
+# where each data point is a 4D feature vector
+print("[INFO] preparing data...")
+(X, Y) = make_blobs(n_samples=1000, n_features=4, centers=3,
+	cluster_std=2.5, random_state=95)
+# create training and testing splits, and convert them to PyTorch
+# tensors
+(trainX, testX, trainY, testY) = train_test_split(X, Y,
+	test_size=0.15, random_state=95)
+trainX = torch.from_numpy(trainX).float()
+testX = torch.from_numpy(testX).float()
+trainY = torch.from_numpy(trainY).float()
+testY = torch.from_numpy(testY).float()
+
+On Lines 20 and 21, we use torch.hub.load
+to initialize our own model, the same way we had loaded the DCGAN model as shown earlier. The model has been initialized and the weights have been loaded according to the entry point in the hubconf.py
+script in our subdirectory. As you can notice, we give the subdirectory github
+repository as the parameter.
+
+Now, for evaluation of the model, we’ll create data the same way we had created during our model training (Lines 26 and 27) and use train_test_split
+to create data splits (Lines 31-36).
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+# initialize the neural network loss function
+lossFunc = nn.CrossEntropyLoss()
+# set device to cuda if available and initialize
+# testing loss and accuracy
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+testLoss = 0
+testAcc = 0
+samples = 0
+# set model to eval and grab a batch of data
+print("[INFO] setting the model in evaluation mode...")
+model.eval()
+(batchX, batchY) = next(next_batch(testX, testY, args["batch_size"]))
+
+On Line 39, we initialize the cross-entropy loss function as done during the model training. We proceed to initialize the evaluation metrics on Lines 44-46.
+
+The model is set to evaluation mode (Line 50), and a single batch of data is grabbed to be evaluated upon by the model (Line 51).
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+# initialize a no-gradient context
+with torch.no_grad():
+	# load the data into device
+	(batchX, batchY) = (batchX.to(DEVICE), batchY.to(DEVICE))
+	# pass the data through the model to get the output and calculate
+	# loss
+	predictions = model(batchX)
+	loss = lossFunc(predictions, batchY.long())
+	# update test loss, accuracy, and the number of
+	# samples visited
+	testLoss += loss.item() * batchY.size(0)
+	testAcc += (predictions.max(1)[1] == batchY).sum().item()
+	samples += batchY.size(0)
+	print("[INFO] test loss: {:.3f}".format(testLoss / samples))
+	print("[INFO] test accuracy: {:.3f}".format(testAcc / samples))
+
+Turning off the automatic gradients (Line 54), we load the batch of data to the device and feed it to the model (Lines 56-60). The lossFunc
+proceeds to calculate the loss on Line 61.
+
+With the help of the loss, we update the accuracy variable on Line 66, along with some other metrics like sample size (Line 67).
+
+Let’s see how the model fared!
+→ Launch Jupyter Notebook on Google Colab
+Torch Hub Series #1: Introduction to Torch Hub
+[INFO] loading the model using torch hub...
+[INFO] preparing data...
+[INFO] setting the model in evaluation mode...
+Using cache found in /root/.cache/torch/hub/cr0wley-zz_torch_hub_test_main
+[INFO] test loss: 0.086
+[INFO] test accuracy: 0.969
+
+Since we created our test data using the same paradigms used during training the model, it performed as expected, with a test accuracy of 0.969.
+
+What's next? I recommend PyImageSearch University.
+Course information:
+30+ total classes • 39h 44m video • Last updated: 12/2021
+★★★★★ 4.84 (128 Ratings) • 3,000+ Students Enrolled
+
+I strongly believe that if you had the right teacher you could master computer vision and deep learning.
+
+Do you think learning computer vision and deep learning has to be time-consuming, overwhelming, and complicated? Or has to involve complex mathematics and equations? Or requires a degree in computer science?
+
+That’s not the case.
+
+All you need to master computer vision and deep learning is for someone to explain things to you in simple, intuitive terms. And that’s exactly what I do. My mission is to change education and how complex Artificial Intelligence topics are taught.
+
+If you're serious about learning computer vision, your next stop should be PyImageSearch University, the most comprehensive computer vision, deep learning, and OpenCV course online today. Here you’ll learn how to successfully and confidently apply computer vision to your work, research, and projects. Join me in computer vision mastery.
+
+Inside PyImageSearch University you'll find:
+
+    ✓ 30+ courses on essential computer vision, deep learning, and OpenCV topics
+    ✓ 30+ Certificates of Completion
+    ✓ 39h 44m on-demand video
+    ✓ Brand new courses released every month, ensuring you can keep up with state-of-the-art techniques
+    ✓ Pre-configured Jupyter Notebooks in Google Colab
+    ✓ Run all code examples in your web browser — works on Windows, macOS, and Linux (no dev environment configuration required!)
+    ✓ Access to centralized code repos for all 500+ tutorials on PyImageSearch
+    ✓ Easy one-click downloads for code, datasets, pre-trained models, etc.
+    ✓ Access on mobile, laptop, desktop, etc.
+
+Click here to join PyImageSearch University
+
+Summary
+
+I cannot emphasize enough how important the reproduction of results is in today’s research world. Especially in machine learning, we’ve slowly reached a point where novel research ideas are getting more complex day by day. In a situation like that, researchers having a platform to easily make their research and results public takes a huge burden.
+
+When you already have enough things to worry about as a researcher, having the tool to make your model and results public using a single script and a few lines of code is a great boon for us. Of course, as a project, Torch Hub will evolve more according to the user’s needs as days progress. Regardless of that, the ecosystem advocated by the creation of Torch Hub will help Machine Learning enthusiasts for generations to come.
+Citation Information
+
+Chakraborty, D. “Torch Hub Series #1: Introduction to Torch Hub,” PyImageSearch, 2021, https://www.pyimagesearch.com/2021/12/20/torch-hub-series-1-introduction-to-torch-hub/
+@article{dev_2021_THS1,
+   author = {Devjyoti Chakraborty},
+   title = {{Torch Hub} Series \#1: Introduction to {Torch Hub}},
+   journal = {PyImageSearch},
+   year = {2021},
+   note = {https://www.pyimagesearch.com/2021/12/20/torch-hub-series-1-introduction-to-torch-hub/},
+}
+Want free GPU credits to train models?
+
+    We used Jarvislabs.ai, a GPU cloud, for all the experiments.
+    We are proud to offer PyImageSearch University students $20 worth of Jarvislabs.ai GPU cloud credits. Join PyImageSearch University and claim your $20 credit here.
+
+In Deep Learning, we need to train Neural Networks. These Neural Networks can be trained on a CPU but take a lot of time. Moreover, sometimes these networks do not even fit (run) on a CPU.
+
+To overcome this problem, we use GPUs. The problem is these GPUs are expensive and become outdated quickly.
+
+GPUs are great because they take your Neural Network and train it quickly. The problem is that GPUs are expensive, so you don’t want to buy one and use it only occasionally. Cloud GPUs let you use a GPU and only pay for the time you are running the GPU. It’s a brilliant idea that saves you money.
+
+JarvisLabs provides the best-in-class GPUs, and PyImageSearch University students get between 10 - 50 hours on a world-class GPU (time depends on the specific GPU you select).
+
+This gives you a chance to test-drive a monstrously powerful GPU on any of our tutorials in a jiffy. So join PyImageSearch University today and try for yourself.
+
+Click here to get Jarvislabs credits now
+
+To download the source code to this post (and be notified when future tutorials are published here on PyImageSearch), simply enter your email address in the form below!
+
+Download the Source Code and FREE 17-page Resource Guide
+
+Enter your email address below to get a .zip of the code and a FREE 17-page Resource Guide on Computer Vision, OpenCV, and Deep Learning. Inside you'll find my hand-picked tutorials, books, courses, and libraries to help you master CV and DL!
+
+About the Author
+
+Hey, I'm Devjyoti and I joined the ML bandwagon because it was too good to resist. Throughout my ML journey, I have been stuck many times while understanding concepts. I want to present those concepts to you in a way I wish they were presented to me, so the learning process becomes easier!
+Reader Interactions
+
+Previous Article:
+GAN Training Challenges: DCGAN for Color Images
+
+Next Article:
+Torch Hub Series #2: VGG and ResNet
+Comment section
+
+Hey, Adrian Rosebrock here, author and creator of PyImageSearch. While I love hearing from readers, a couple years ago I made the tough decision to no longer offer 1:1 help over blog post comments.
+
+At the time I was receiving 200+ emails per day and another 100+ blog post comments. I simply did not have the time to moderate and respond to them all, and the sheer volume of requests was taking a toll on me.
+
+Instead, my goal is to do the most good for the computer vision, deep learning, and OpenCV community at large by focusing my time on authoring high-quality blog posts, tutorials, and books/courses.
+
+If you need help learning computer vision and deep learning, I suggest you refer to my full catalog of books and courses — they have helped tens of thousands of developers, students, and researchers just like yourself learn Computer Vision, Deep Learning, and OpenCV.
+
+Click here to browse my full catalog.
+Primary Sidebar
+PyImageSearch University — NOW ENROLLING!
+
+You can master Computer Vision, Deep Learning, and OpenCV
+
+Course information:
+30+ total classes • 39h 44m video • Last updated: 12/2021
+★★★★★
+4.84 (128 Ratings) • 3,000+ Students Enrolled
+
+✓ 30+ courses on essential computer vision, deep learning, and OpenCV topics
+✓ 30+ Certificates of Completion
+✓ 39h 44m on-demand video
+✓ Brand new courses released every month, ensuring you can keep up with state-of-the-art techniques
+✓ Pre-configured Jupyter Notebooks in Google Colab
+✓ Run all code examples in your web browser — works on Windows, macOS, and Linux (no dev environment configuration required!)
+✓ Access to centralized code repos for all 500+ tutorials on PyImageSearch
+✓ Easy one-click downloads for code, datasets, pre-trained models, etc.
+✓ Access on mobile, laptop, desktop, etc.
+Join Now
+Picked For You
+Torch Hub Series #5: MiDaS — Model on Depth Estimation
+Torch Hub Series #4: PGAN — Model on GAN
+Torch Hub Series #3: YOLOv5 and SSD — Models on Object Detection
+Torch Hub Series #2: VGG and ResNet
+U-Net: Training Image Segmentation Models in PyTorch
+Similar articles
+Computer Graphics
+Deep Learning
+NeRF
+Neural Radiance Fields (NeRF)
+Tutorials
+Computer Graphics and Deep Learning with NeRF using TensorFlow and Keras: Part 1
+November 10, 2021
+
+Getting Started
+Image Processing
+Tutorials
+Bubble sheet multiple choice scanner and test grader using OMR, Python, and OpenCV
+October 3, 2016
+
+Kickstarter
+PyImageSearch Gurus: The big list of computer vision topics you’ll master inside my course.
+January 9, 2015
+
+You can learn Computer Vision, Deep Learning, and OpenCV.
+
+Get your FREE 17 page Computer Vision, OpenCV, and Deep Learning Resource Guide PDF. Inside you’ll find our hand-picked tutorials, books, courses, and libraries to help you master CV and DL.
+Footer
+Topics
+
+    Deep Learning
+    Dlib Library
+    Embedded/IoT and Computer Vision
+    Face Applications
+    Image Processing
+    Interviews
+    Keras
+
+    Machine Learning and Computer Vision
+    Medical Computer Vision
+    Optical Character Recognition (OCR)
+    Object Detection
+    Object Tracking
+    OpenCV Tutorials
+    Raspberry Pi
+
+Books & Courses
+
+    FREE CV, DL, and OpenCV Crash Course
+    Practical Python and OpenCV
+    Deep Learning for Computer Vision with Python
+    PyImageSearch Gurus Course
+    Raspberry Pi for Computer Vision
+
+PyImageSearch
+
+    Get Started
+    OpenCV Install Guides
+    About
+    FAQ
+    Blog
+    Contact
+    Privacy Policy
+
+© 2022 PyImageSearch. All Rights Reserved.
+
+
+
+
+
+
+
+
+
+############ FOOBAR----Training an object detector from scratch in PyTorch
+
+Deep Learning PyTorch Tutorials
+Training an object detector from scratch in PyTorch
+
+by Devjyoti Chakraborty on November 1, 2021
+Click here to download the source code to this post
+
+In this tutorial, you will learn how to train a custom object detector from scratch using PyTorch.
+
+This lesson is part 2 of a 3-part series on advanced PyTorch techniques:
+
+    Training a DCGAN in PyTorch (last week’s tutorial)
+    Training an object detector from scratch in PyTorch (today’s tutorial)
+    U-Net: Training Image Segmentation Models in PyTorch (next week’s blog post)
+
+Since my childhood, the idea of artificial intelligence (AI) has fascinated me (like every other kid). But, of course, the concept of AI that I had was vastly different from what it actually was, unquestionably due to pop culture. Until the end of my teenage years, I firmly believed that the unchecked growth of AI would lead to something like the T-800 (the terminator from The Terminator). Fortunately, the actual scenario can be better explained using Figure 1:
+Figure 1: Machine Learning.
+
+Don’t get me wrong, though. Machine Learning may be a bunch of matrices and calculus coalesced together, but the sheer amount of things we can do with these can be best described by a single word: limitless.
+
+One such application, which always intrigued me, was Object Detection. Pouring in image data to get labels was one thing, but making our model learn where the label is? That’s a whole different ball game, something right out of some espionage movie. And that is exactly what we’ll be going through today!
+
+In today’s tutorial, we’ll learn how to train our very own object detector from scratch in PyTorch. This blog will help you:
+
+    Understand the intuition behind Object Detection
+    Understand the step-by-step approach to building your own Object Detector
+    Learn how to fine-tune parameters to get ideal results
+
+To learn how to train an object detector from scratch in Pytorch, just keep reading.
+Training an Object Detector from scratch in PyTorch
+
+Much before the power deep learning algorithms of today existed, Object Detection was a domain that was extensively worked on throughout history. From the late 1990s to the early 2020s, many new ideas were proposed, which are still used as benchmarks for deep learning algorithms to this day. Unfortunately, back then, researchers didn’t have much computation power at their disposal, so most of these techniques relied on lots of additional mathematics to reduce compute time. Thankfully, we wouldn’t be facing that problem.
+Our Approach to Object Detection
+
+Let’s first understand the intuition behind Object Detection. The approach we are going to take is quite similar to training a simple classifier. The weights of the classifier keep changing until it outputs the correct labels for a given dataset and reduces loss. We will be doing the exact same thing for today’s task, except our model will output 5 values, 4 of them being the coordinates of the bounding box surrounding our object. The 5th value is the label of the object being detected. Notice the architecture in Figure 2.
+Figure 2: Schematic of Our Object Detector.
+
+The main model will branch into two subsets: the regressor and the classifier. The former will output the bounding box’s starting and ending coordinates, while the latter will output the object label. The combined losses generated by these 5 values will serve in our backpropagation. Quite a simple way to start, isn’t it?
+
+Of course, through the years, several powerful algorithms took over the Object Detection domain, like R-CNN and YOLO. But our approach will serve as a reasonable starting point to wrap your head around the basic idea behind Object Detection!
+Configuring your development environment
+
+To follow this guide, first and foremost, you need to have PyTorch installed in your system. To access PyTorch’s own set of models for vision computing, you will also need to have Torchvision in your system. For some array and storage operations, we have employed the use of numpy
+. We are also using the imutils
+package for data handling. For our plots, we will be using matplotlib
+. For better tracking of our model training, we’ll be using tqdm
+, and finally, we’ll be needing OpenCV in our system!
+
+Luckily, all of the above-mentioned packages are pip-installable!
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+$ pip install opencv-contrib-python
+$ pip install torch
+$ pip install torchvision
+$ pip install imutils
+$ pip install matplotlib
+$ pip install numpy
+$ pip install tqdm
+
+If you need help configuring your development environment for OpenCV, I highly recommend that you read my pip install OpenCV guide — it will have you up and running in a matter of minutes.
+Having problems configuring your development environment?
+Figure 3: Having trouble configuring your dev environment? Want access to pre-configured Jupyter Notebooks running on Google Colab? Be sure to join PyImageSearch University — you’ll be up and running with this tutorial in a matter of minutes.
+
+All that said, are you:
+
+    Short on time?
+    Learning on your employer’s administratively locked system?
+    Wanting to skip the hassle of fighting with the command line, package managers, and virtual environments?
+    Ready to run the code right now on your Windows, macOS, or Linux system?
+
+Then join PyImageSearch University today!
+
+Gain access to Jupyter Notebooks for this tutorial and other PyImageSearch guides that are pre-configured to run on Google Colab’s ecosystem right in your web browser! No installation required.
+
+And best of all, these Jupyter Notebooks will run on Windows, macOS, and Linux!
+Project structure
+
+We first need to review our project directory structure.
+
+Start by accessing the “Downloads” section of this tutorial to retrieve the source code and example images.
+
+From there, take a look at the directory structure:
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+!tree .
+.
+├── dataset.zip
+├── output
+│   ├── detector.pth
+│   ├── le.pickle
+│   ├── plots
+│   │   └── training.png
+│   └── test_paths.txt
+├── predict.py
+├── pyimagesearch
+│   ├── bbox_regressor.py
+│   ├── config.py
+│   ├── custom_tensor_dataset.py
+│   └── __init__.py
+└── train.py
+
+The first item in the directory is dataset.zip
+. This zip file contains the complete dataset (Images, labels, and bounding boxes). More about it in a later section.
+
+Next, we have the output
+directory. This directory is where all our saved models, results, and other important requirements are dumped.
+
+There are two scripts in the parent directory:
+
+    train.py
+    : used to train our object detector
+    predict.py
+    : used to draw inference from our model and see the object detector in action 
+
+Lastly, we have the most important directory, the pyimagesearch
+directory. It houses 3 very important scripts.
+
+    bbox_regressor.py
+    : houses the complete object detector architecture
+    config.py
+    : contains the configuration of the end-to-end training and inference pipeline
+    custom_tensor_dataset.py
+    : contains a custom class for data preparation
+
+That concludes the review of our project directory.
+Configuring the prerequisites for Object Detection
+
+Our first task is to configure several hyperparameters we’ll be using throughout the project. For that, let’s hop into the pyimagesearch
+folder and open the config.py
+script.
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# import the necessary packages
+import torch
+import os
+# define the base path to the input dataset and then use it to derive
+# the path to the input images and annotation CSV files
+BASE_PATH = "dataset"
+IMAGES_PATH = os.path.sep.join([BASE_PATH, "images"])
+ANNOTS_PATH = os.path.sep.join([BASE_PATH, "annotations"])
+# define the path to the base output directory
+BASE_OUTPUT = "output"
+# define the path to the output model, label encoder, plots output
+# directory, and testing image paths
+MODEL_PATH = os.path.sep.join([BASE_OUTPUT, "detector.pth"])
+LE_PATH = os.path.sep.join([BASE_OUTPUT, "le.pickle"])
+PLOTS_PATH = os.path.sep.join([BASE_OUTPUT, "plots"])
+TEST_PATHS = os.path.sep.join([BASE_OUTPUT, "test_paths.txt"])
+
+We start by defining several paths which we will later use. Then on Lines 7-12, we define paths for our datasets (Images and annotations) and output. Next, we create separate paths for our detector and label encoder, followed by paths for our plots and testing images (Lines 16-19).
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# determine the current device and based on that set the pin memory
+# flag
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+PIN_MEMORY = True if DEVICE == "cuda" else False
+# specify ImageNet mean and standard deviation
+MEAN = [0.485, 0.456, 0.406]
+STD = [0.229, 0.224, 0.225]
+# initialize our initial learning rate, number of epochs to train
+# for, and the batch size
+INIT_LR = 1e-4
+NUM_EPOCHS = 20
+BATCH_SIZE = 32
+# specify the loss weights
+LABELS = 1.0
+BBOX = 1.0
+
+Since we are training an object detector, it’s advisable to train on a GPU instead of a CPU since the computations are more complex. Hence, we set our PyTorch device to CUDA if a CUDA-compatible GPU is available in our system (Lines 23 and 24).
+
+We will, of course, be using PyTorch’s transforms during our dataset preparation. Hence we specify the mean and standard deviation values (Lines 27 and 28). The three values represent the channel-wise, width-wise, and height-wise mean and standard deviation, respectively. Finally, we initialize hyperparameters like learning rate, epochs, batch size, and Loss weights for our model (Lines 32-38).
+Creating the Custom Object Detection Data processor
+
+Let’s have a look at our data directory.
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+!tree . 
+.
+├── dataset
+│   ├── annotations
+│   └── images
+│       ├── airplane
+│       ├── face
+│       └── motorcycle
+
+The dataset subdivides into two folders: annotations (which contains CSV files of bounding box start and end points) and images (which are further divided into three folders, each representing the classes we’ll be using today).
+
+Since we’ll use PyTorch’s own DataLoader, it’s important to preprocess the data in a way that the DataLoader will accept. The custom_tensor_dataset.py
+script will do exactly that.
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# import the necessary packages
+from torch.utils.data import Dataset
+class CustomTensorDataset(Dataset):
+	# initialize the constructor
+	def __init__(self, tensors, transforms=None):
+		self.tensors = tensors
+		self.transforms = transforms
+
+We have created a custom class, CustomTensorDataset
+, which inherits from the torch.utils.data.Dataset
+class (Line 4). This way, we can configure the internal functions to our needs while retaining the core properties of the torch.utils.data.Dataset
+class.
+
+On Lines 6-8, the constructor function __init__
+is created. The constructor takes in two arguments:
+
+    tensors
+    : A tuple of three tensors, namely the image, label, and the bounding box coordinates.
+    transforms
+    : A torchvision.transforms
+    instance which will be used to process the image. 
+
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+	def __getitem__(self, index):
+		# grab the image, label, and its bounding box coordinates
+		image = self.tensors[0][index]
+		label = self.tensors[1][index]
+		bbox = self.tensors[2][index]
+		# transpose the image such that its channel dimension becomes
+		# the leading one
+		image = image.permute(2, 0, 1)
+		# check to see if we have any image transformations to apply
+		# and if so, apply them
+		if self.transforms:
+			image = self.transforms(image)
+		# return a tuple of the images, labels, and bounding
+		# box coordinates
+		return (image, label, bbox)
+
+Since we are using a custom class, we will override the parent (Dataset
+) class’s methods. So, the __getitem__
+method is altered according to our needs. But, first, the tensor
+tuple is unpacked into its constituents (Lines 12-14).
+
+The image tensor is originally in the form Height
+× Width
+× Channels
+. However, all PyTorch models need their input to be “channel first.” Accordingly, the image.permute
+method rearranges the image tensor (Line 18).
+
+We add a check for the torchvision.transforms
+instance on Lines 22 and 23. If the check yields true
+, the image is passed through the transform
+instance. After this, the __getitem__
+method returns the image, label, and bounding boxes.
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+	def __len__(self):
+		# return the size of the dataset
+		return self.tensors[0].size(0)
+
+The second method that we’ll override is the __len__
+method. It returns the size of the image dataset tensor (Lines 29-31). This concludes the custom_tensor_dataset.py
+script.
+Building the Objection Detection Architecture
+
+Coming to the model we’ll be needing for this project, we need to keep two things in mind. First, to avoid additional hassle and for efficient feature extraction, we’ll use a pre-trained model to act as the base model. Second, the base model will then be split into two parts; the box regressor and the label classifier. Both of these will be individual model entities.
+
+The second thing to remember is that only the box regressor and the label classifier will have trainable weights. The weights of the pre-trained model will be left untouched, as shown in Figure 4.
+Figure 4: Model Architecture.
+
+With this in mind, let’s hop into bbox_regressor.py
+!
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# import the necessary packages
+from torch.nn import Dropout
+from torch.nn import Identity
+from torch.nn import Linear
+from torch.nn import Module
+from torch.nn import ReLU
+from torch.nn import Sequential
+from torch.nn import Sigmoid
+class ObjectDetector(Module):
+	def __init__(self, baseModel, numClasses):
+		super(ObjectDetector, self).__init__()
+		# initialize the base model and the number of classes
+		self.baseModel = baseModel
+		self.numClasses = numClasses
+
+For the custom model ObjectDetector
+, we’ll use torch.nn.Module
+as the parent class (Line 10). For the constructor function __init__
+, there are two external arguments; the base model and the number of labels (Lines 11-16).
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+		# build the regressor head for outputting the bounding box
+		# coordinates
+		self.regressor = Sequential(
+			Linear(baseModel.fc.in_features, 128),
+			ReLU(),
+			Linear(128, 64),
+			ReLU(),
+			Linear(64, 32),
+			ReLU(),
+			Linear(32, 4),
+			Sigmoid()
+		)
+
+Moving on to the regressor, keep in mind that our end goal is to produce 4 separate values: the starting x-axis value, the starting y-axis value, the ending x-axis value, and the ending y-axis value. The first Linear
+layer inputs the fully connected layer of the base model with an output size set to 128 (Line 21).
+
+This is followed by a few Linear
+and ReLU
+layers (Lines 22-27), finally ending with a Linear
+layer which outputs 4 values followed by a Sigmoid
+layer (Line 28).
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+		# build the classifier head to predict the class labels
+		self.classifier = Sequential(
+			Linear(baseModel.fc.in_features, 512),
+			ReLU(),
+			Dropout(),
+			Linear(512, 512),
+			ReLU(),
+			Dropout(),
+			Linear(512, self.numClasses)
+		)
+		# set the classifier of our base model to produce outputs
+		# from the last convolution block
+		self.baseModel.fc = Identity()
+
+The next step is the classifier for the object label. In the Regressor, we take the base model’s fully connected layer’s feature size and plug it into the first Linear
+layer (Line 33). This is followed by repeating the ReLU
+, Dropout
+, and Linear
+layers (Lines 34-40). The Dropout
+layers are generally used to help spread generalization and prevent overfitting.
+
+The final step of the initialization is to make the base model’s fully connected layer into an Identity
+layer, which means it’ll mirror the outputs produced by the convolution block right before it (Line 44).
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+ 	def forward(self, x):
+		# pass the inputs through the base model and then obtain
+		# predictions from two different branches of the network
+		features = self.baseModel(x)
+		bboxes = self.regressor(features)
+		classLogits = self.classifier(features)
+		# return the outputs as a tuple
+		return (bboxes, classLogits)
+
+Next comes the forward
+step (Line 46). We simply take the output of the base model and pass it through the regressor and the classifier (Lines 49-51).
+
+With that, we finish designing the architecture of our object detector.
+Training the Object Detection Model
+
+Just one more step remaining before we can see the object detector in action. So let’s hop over to the train.py
+script and train the model!
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# USAGE
+# python train.py
+# import the necessary packages
+from pyimagesearch.bbox_regressor import ObjectDetector
+from pyimagesearch.custom_tensor_dataset import CustomTensorDataset
+from pyimagesearch import config
+from sklearn.preprocessing import LabelEncoder
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from torch.nn import CrossEntropyLoss
+from torch.nn import MSELoss
+from torch.optim import Adam
+from torchvision.models import resnet50
+from sklearn.model_selection import train_test_split
+from imutils import paths
+from tqdm import tqdm
+import matplotlib.pyplot as plt
+import numpy as np
+import pickle
+import torch
+import time
+import cv2
+import os
+# initialize the list of data (images), class labels, target bounding
+# box coordinates, and image paths
+print("[INFO] loading dataset...")
+data = []
+labels = []
+bboxes = []
+imagePaths = []
+
+After importing the necessary packages, we create empty lists for our data, labels, bounding boxes, and image paths (Lines 29-32).
+
+Now it’s time for some data pre-processing.
+→ Launch Jupyter Notebook on Google Colab
+ Training an Object Detector from scratch in PyTorch
+# loop over all CSV files in the annotations directory
+for csvPath in paths.list_files(config.ANNOTS_PATH, validExts=(".csv")):
+	# load the contents of the current CSV annotations file
+	rows = open(csvPath).read().strip().split("\n")
+	# loop over the rows
+	for row in rows:
+		# break the row into the filename, bounding box coordinates,
+		# and class label
+		row = row.split(",")
+		(filename, startX, startY, endX, endY, label) = row
+		# derive the path to the input image, load the image (in
+		# OpenCV format), and grab its dimensions
+		imagePath = os.path.sep.join([config.IMAGES_PATH, label,
+			filename])
+		image = cv2.imread(imagePath)
+		(h, w) = image.shape[:2]
+		# scale the bounding box coordinates relative to the spatial
+		# dimensions of the input image
+		startX = float(startX) / w
+		startY = float(startY) / h
+		endX = float(endX) / w
+		endY = float(endY) / h
+		# load the image and preprocess it
+		image = cv2.imread(imagePath)
+		image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+		image = cv2.resize(image, (224, 224))
+		# update our list of data, class labels, bounding boxes, and
+		# image paths
+		data.append(image)
+		labels.append(label)
+		bboxes.append((startX, startY, endX, endY))
+		imagePaths.append(imagePath)
+
+On Line 35, we start looping over all available CSVs in the directory. Opening the CSVs, we then begin looping over the rows to split the data (Lines 37-44).
+
+After splitting the row values into a tuple of individual values, we first single out the image path (Line 48). Then, we use OpenCV to read the image and get its height and width (Lines 50 and 51).
+
+The height and width values are then used to scale the bounding box coordinates to the range of 0
+and 1
+(Lines 55-58).
+
+Next, we load the image and do some slight preprocessing (Lines 61-63).
+
+The empty lists are then updated with the unpacked values, and the process repeats as each iteration passes (Lines 67-70).
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# convert the data, class labels, bounding boxes, and image paths to
+# NumPy arrays
+data = np.array(data, dtype="float32")
+labels = np.array(labels)
+bboxes = np.array(bboxes, dtype="float32")
+imagePaths = np.array(imagePaths)
+# perform label encoding on the labels
+le = LabelEncoder()
+labels = le.fit_transform(labels)
+
+For faster processing of data, the lists are converted into numpy
+arrays (Lines 74-77). Since the labels are in string format, we use scikit-learn’s LabelEncoder
+to transform them into their respective indices (Lines 80 and 81).
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# partition the data into training and testing splits using 80% of
+# the data for training and the remaining 20% for testing
+split = train_test_split(data, labels, bboxes, imagePaths,
+	test_size=0.20, random_state=42)
+# unpack the data split
+(trainImages, testImages) = split[:2]
+(trainLabels, testLabels) = split[2:4]
+(trainBBoxes, testBBoxes) = split[4:6]
+(trainPaths, testPaths) = split[6:]
+
+Using another handy scikit-learn tool called train_test_split
+, we part the data into training and test sets, keeping an 80-20
+ratio (Lines 85 and 86). Since the split will apply to all the arrays passed into the train_test_split
+function, we can unpack them into tuples using simple row slicing (Lines 89-92).
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# convert NumPy arrays to PyTorch tensors
+(trainImages, testImages) = torch.tensor(trainImages),\
+	torch.tensor(testImages)
+(trainLabels, testLabels) = torch.tensor(trainLabels),\
+	torch.tensor(testLabels)
+(trainBBoxes, testBBoxes) = torch.tensor(trainBBoxes),\
+	torch.tensor(testBBoxes)
+# define normalization transforms
+transforms = transforms.Compose([
+	transforms.ToPILImage(),
+	transforms.ToTensor(),
+	transforms.Normalize(mean=config.MEAN, std=config.STD)
+])
+
+The unpacked train and test data, labels, and bounding boxes are then converted into PyTorch tensors from the numpy format (Lines 95-100). Next, we proceed to create a torchvision.transforms
+instance to easily process the dataset (Lines 103-107). Through this, the dataset will also get normalized using the mean and standard deviation values defined in config.py
+.
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# convert NumPy arrays to PyTorch datasets
+trainDS = CustomTensorDataset((trainImages, trainLabels, trainBBoxes),
+	transforms=transforms)
+testDS = CustomTensorDataset((testImages, testLabels, testBBoxes),
+	transforms=transforms)
+print("[INFO] total training samples: {}...".format(len(trainDS)))
+print("[INFO] total test samples: {}...".format(len(testDS)))
+# calculate steps per epoch for training and validation set
+trainSteps = len(trainDS) // config.BATCH_SIZE
+valSteps = len(testDS) // config.BATCH_SIZE
+# create data loaders
+trainLoader = DataLoader(trainDS, batch_size=config.BATCH_SIZE,
+	shuffle=True, num_workers=os.cpu_count(), pin_memory=config.PIN_MEMORY)
+testLoader = DataLoader(testDS, batch_size=config.BATCH_SIZE,
+	num_workers=os.cpu_count(), pin_memory=config.PIN_MEMORY)
+
+Remember, in the custom_tensor_dataset.py
+script, we created a custom Dataset
+class to cater to our exact needs. As of now, our required entities are just tensors. So, to turn them into a PyTorch DataLoader accepted format, we create training and testing instances of the CustomTensorDataset
+class, passing the images, labels, and the bounding boxes as arguments (Lines 110-113).
+
+On Lines 118 and 119, the steps per epoch values are calculated using the length of the datasets and the batch size value set in config.py
+.
+
+Finally, we pass the CustomTensorDataset
+instances through the DataLoader
+and create the train and test Data loaders (Lines 122-125).
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# write the testing image paths to disk so that we can use then
+# when evaluating/testing our object detector
+print("[INFO] saving testing image paths...")
+f = open(config.TEST_PATHS, "w")
+f.write("\n".join(testPaths))
+f.close()
+# load the ResNet50 network
+resnet = resnet50(pretrained=True)
+# freeze all ResNet50 layers so they will *not* be updated during the
+# training process
+for param in resnet.parameters():
+	param.requires_grad = False
+
+Since we’ll be using the test image paths for evaluation later, it’s written to the disk (Lines 129-132).
+
+For the base model in our architecture, we’ll be using a pre-trained resnet50 (Line 135). However, as mentioned before, the weights of the base model will be left untouched. Hence, we freeze the weights (Lines 139 and 140).
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# create our custom object detector model and flash it to the current
+# device
+objectDetector = ObjectDetector(resnet, len(le.classes_))
+objectDetector = objectDetector.to(config.DEVICE)
+# define our loss functions
+classLossFunc = CrossEntropyLoss()
+bboxLossFunc = MSELoss()
+# initialize the optimizer, compile the model, and show the model
+# summary
+opt = Adam(objectDetector.parameters(), lr=config.INIT_LR)
+print(objectDetector)
+# initialize a dictionary to store training history
+H = {"total_train_loss": [], "total_val_loss": [], "train_class_acc": [],
+	 "val_class_acc": []}
+
+With the model prerequisites complete, we create our custom model instance and load it to the current device (Lines 144 and 145). For the classifier loss, Cross-Entropy loss is being used, while for the Box Regressor, we are sticking to Mean squared error loss (Lines 148 and 149). On Line 153, Adam
+is set as the Object Detector optimizer. To track the training loss and other metrics, a dictionary H
+is initialized on Lines 157 and 158.
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# loop over epochs
+print("[INFO] training the network...")
+startTime = time.time()
+for e in tqdm(range(config.NUM_EPOCHS)):
+	# set the model in training mode
+	objectDetector.train()
+	# initialize the total training and validation loss
+	totalTrainLoss = 0
+	totalValLoss = 0
+	# initialize the number of correct predictions in the training
+	# and validation step
+	trainCorrect = 0
+	valCorrect = 0
+
+For training speed assessment, the start time is noted (Line 162). Looping over the number of epochs, we first set the object detector to training mode (Line 165) and initialize the losses and number of correct predictions (Lines 168-174).
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+	# loop over the training set
+	for (images, labels, bboxes) in trainLoader:
+		# send the input to the device
+		(images, labels, bboxes) = (images.to(config.DEVICE),
+			labels.to(config.DEVICE), bboxes.to(config.DEVICE))
+		# perform a forward pass and calculate the training loss
+		predictions = objectDetector(images)
+		bboxLoss = bboxLossFunc(predictions[0], bboxes)
+		classLoss = classLossFunc(predictions[1], labels)
+		totalLoss = (config.BBOX * bboxLoss) + (config.LABELS * classLoss)
+		# zero out the gradients, perform the backpropagation step,
+		# and update the weights
+		opt.zero_grad()
+		totalLoss.backward()
+		opt.step()
+		# add the loss to the total training loss so far and
+		# calculate the number of correct predictions
+		totalTrainLoss += totalLoss
+		trainCorrect += (predictions[1].argmax(1) == labels).type(
+			torch.float).sum().item()
+
+Looping over the train data loader, we first load the images, labels, and bounding boxes to the device in use (Lines 179 and 180). Next, we plug the images into our Object Detector and store the predictions (Line 183). Finally, since the model will give two predictions (one for the label and one for the bounding box), we index those out and calculate those losses, respectively (Lines 183-185).
+
+The combined value of both the losses will act as the total loss for the architecture. We multiply the respective loss weights for the bounding box loss and the label loss defined in config.py
+to the losses and sum them up (Line 186).
+
+With the help of PyTorch’s automatic gradient functionality, we simply reset the gradients, calculate the weights due to the loss generated, and update the parameter based on the gradient of the current step (Lines 190-192). It is important to reset the gradients because the backward
+function keeps accumulating the gradients altogether. Since we only want the gradient pertaining to the current step, the opt.zero_grad
+flushes out the previous values.
+
+On Lines 196-198, we update the loss values and correct predictions.
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+	# switch off autograd
+	with torch.no_grad():
+		# set the model in evaluation mode
+		objectDetector.eval()
+		# loop over the validation set
+		for (images, labels, bboxes) in testLoader:
+			# send the input to the device
+			(images, labels, bboxes) = (images.to(config.DEVICE),
+				labels.to(config.DEVICE), bboxes.to(config.DEVICE))
+			# make the predictions and calculate the validation loss
+			predictions = objectDetector(images)
+			bboxLoss = bboxLossFunc(predictions[0], bboxes)
+			classLoss = classLossFunc(predictions[1], labels)
+			totalLoss = (config.BBOX * bboxLoss) + \
+				(config.LABELS * classLoss)
+			totalValLoss += totalLoss
+			# calculate the number of correct predictions
+			valCorrect += (predictions[1].argmax(1) == labels).type(
+				torch.float).sum().item()
+
+Moving on to the model evaluation, we’ll first turn off automatic gradients and switch to the evaluation mode of the object detector (Lines 201-203). Then, looping over the test data, we’ll repeat the same process as done in training apart from updating the weights (Lines 212-214).
+
+The combined loss is calculated in the same manner as the training step (Lines 215 and 216). Consequently, the total loss value and correct predictions are updated (Lines 217-221).
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+	# calculate the average training and validation loss
+	avgTrainLoss = totalTrainLoss / trainSteps
+	avgValLoss = totalValLoss / valSteps
+	# calculate the training and validation accuracy
+	trainCorrect = trainCorrect / len(trainDS)
+	valCorrect = valCorrect / len(testDS)
+	# update our training history
+	H["total_train_loss"].append(avgTrainLoss.cpu().detach().numpy())
+	H["train_class_acc"].append(trainCorrect)
+	H["total_val_loss"].append(avgValLoss.cpu().detach().numpy())
+	H["val_class_acc"].append(valCorrect)
+	# print the model training and validation information
+	print("[INFO] EPOCH: {}/{}".format(e + 1, config.NUM_EPOCHS))
+	print("Train loss: {:.6f}, Train accuracy: {:.4f}".format(
+		avgTrainLoss, trainCorrect))
+	print("Val loss: {:.6f}, Val accuracy: {:.4f}".format(
+		avgValLoss, valCorrect))
+endTime = time.time()
+print("[INFO] total time taken to train the model: {:.2f}s".format(
+	endTime - startTime))
+
+After one epoch, the average batchwise training and testing losses are calculated on Lines 224 and 225. We also calculate the training and testing accuracies of the epoch using the number of correct predictions (Lines 228 and 229).
+
+Following the calculations, all values are logged in the model history dictionary H
+(Lines 232-235), while the end time is calculated to see how long the training took and after exiting the loop (Line 243).
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# serialize the model to disk
+print("[INFO] saving object detector model...")
+torch.save(objectDetector, config.MODEL_PATH)
+# serialize the label encoder to disk
+print("[INFO] saving label encoder...")
+f = open(config.LE_PATH, "wb")
+f.write(pickle.dumps(le))
+f.close()
+# plot the training loss and accuracy
+plt.style.use("ggplot")
+plt.figure()
+plt.plot(H["total_train_loss"], label="total_train_loss")
+plt.plot(H["total_val_loss"], label="total_val_loss")
+plt.plot(H["train_class_acc"], label="train_class_acc")
+plt.plot(H["val_class_acc"], label="val_class_acc")
+plt.title("Total Training Loss and Classification Accuracy on Dataset")
+plt.xlabel("Epoch #")
+plt.ylabel("Loss/Accuracy")
+plt.legend(loc="lower left")
+# save the training plot
+plotPath = os.path.sep.join([config.PLOTS_PATH, "training.png"])
+plt.savefig(plotPath)
+
+Since we’ll use the object detector for inference, we save it to the disk (Line 249). We also save the label encoder that was created so that the pattern remains unchanged (Lines 253-255)
+
+To assess the model training, we plot all the metrics stored in the model history dictionary H
+(Lines 258-271).
+
+This ends the model training. Next, let’s look at how well the object detector trained!
+Assessing the Object Detection Training
+
+Since the bulk of the model will have its weights unchanged, the training shouldn’t take long. First, let’s take a look at some of the training epochs.
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+[INFO] training the network...
+  0%|          | 0/20 [00:00<?,  
+  5%|▌         | 1/20 [00:16<05:08, 16.21s/it][INFO] EPOCH: 1/20
+Train loss: 0.874699, Train accuracy: 0.7608
+Val loss: 0.360270, Val accuracy: 0.9902
+ 10%|█         | 2/20 [00:31<04:46, 15.89s/it][INFO] EPOCH: 2/20
+Train loss: 0.186642, Train accuracy: 0.9834
+Val loss: 0.052412, Val accuracy: 1.0000
+ 15%|█▌        | 3/20 [00:47<04:28, 15.77s/it][INFO] EPOCH: 3/20
+Train loss: 0.066982, Train accuracy: 0.9883
+...
+ 85%|████████▌ | 17/20 [04:27<00:47, 15.73s/it][INFO] EPOCH: 17/20
+Train loss: 0.011934, Train accuracy: 0.9975
+Val loss: 0.004053, Val accuracy: 1.0000
+ 90%|█████████ | 18/20 [04:43<00:31, 15.67s/it][INFO] EPOCH: 18/20
+Train loss: 0.009135, Train accuracy: 0.9975
+Val loss: 0.003720, Val accuracy: 1.0000
+ 95%|█████████▌| 19/20 [04:58<00:15, 15.66s/it][INFO] EPOCH: 19/20
+Train loss: 0.009403, Train accuracy: 0.9982
+Val loss: 0.003248, Val accuracy: 1.0000
+100%|██████████| 20/20 [05:14<00:00, 15.73s/it][INFO] EPOCH: 20/20
+Train loss: 0.006543, Train accuracy: 0.9994
+Val loss: 0.003041, Val accuracy: 1.0000
+[INFO] total time taken to train the model: 314.68s
+
+We see that the model reached astounding accuracies at 0.9994 and 1.0000 for training and validation, respectively. Let’s see the epoch-wise variation on the training plot Figure 5!
+Figure 5: Training Plot.
+
+The model reached saturation levels fairly quickly in both the training and validation values. Now it’s time to see the object detector in action!
+Drawing Inference from the Object Detector
+
+The final step in this journey is at the predict.py
+script. Here, we will individually loop over the test images and draw bounding boxes with our predicted values.
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# USAGE
+# python predict.py --input dataset/images/face/image_0131.jpg
+# import the necessary packages
+from pyimagesearch import config
+from torchvision import transforms
+import mimetypes
+import argparse
+import imutils
+import pickle
+import torch
+import cv2
+# construct the argument parser and parse the arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("-i", "--input", required=True,
+	help="path to input image/text file of image paths")
+args = vars(ap.parse_args())
+
+The argparse
+module is used to write user-friendly command line interface commands. On Lines 15-18, we construct an argument parser to help the user select the test image.
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# determine the input file type, but assume that we're working with
+# single input image
+filetype = mimetypes.guess_type(args["input"])[0]
+imagePaths = [args["input"]]
+# if the file type is a text file, then we need to process *multiple*
+# images
+if "text/plain" == filetype:
+	# load the image paths in our testing file
+	imagePaths = open(args["input"]).read().strip().split("\n")
+
+We follow the argument parsing with steps to deal with any kind of input the user proceeds to give. On Lines 22 and 23, the imagePaths
+variable is set to deal with a single input image, while on Lines 27-29, the event of multiple images is dealt with.
+→ Launch Jupyter Notebook on Google Colab
+Training and Object Detector from scratch in PyTorch
+# load our object detector, set it evaluation mode, and label
+# encoder from disk
+print("[INFO] loading object detector...")
+model = torch.load(config.MODEL_PATH).to(config.DEVICE)
+model.eval()
+le = pickle.loads(open(config.LE_PATH, "rb").read())
+# define normalization transforms
+transforms = transforms.Compose([
+	transforms.ToPILImage(),
+	transforms.ToTensor(),
+	transforms.Normalize(mean=config.MEAN, std=config.STD)
+])
+
+The model which was trained using the train.py
+script is called for evaluation (Lines 34 and 35). Similarly, the label encoder stored using the aforementioned script is loaded (Line 36). Since we’ll be needing to process the data again, another torchvision.transforms
+instance is created, having the same arguments as the ones used during training.
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+# loop over the images that we'll be testing using our bounding box
+# regression model
+for imagePath in imagePaths:
+	# load the image, copy it, swap its colors channels, resize it, and
+	# bring its channel dimension forward
+	image = cv2.imread(imagePath)
+	orig = image.copy()
+	image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+	image = cv2.resize(image, (224, 224))
+	image = image.transpose((2, 0, 1))
+	# convert image to PyTorch tensor, normalize it, flash it to the
+	# current device, and add a batch dimension
+	image = torch.from_numpy(image)
+	image = transforms(image).to(config.DEVICE)
+	image = image.unsqueeze(0)
+
+Looping over the test images, we read the image and apply some preprocessing to it (Lines 50-54). This is done since our image needs to be plugged into the object detector again.
+
+We proceed to turn the image into a tensor, apply the torchvision.transforms
+instance to it, and add a batching dimension to it (Lines 58-60). Our test image is now ready to be plugged into the object detector.
+→ Launch Jupyter Notebook on Google Colab
+Training an Object Detector from scratch in PyTorch
+	# predict the bounding box of the object along with the class
+	# label
+	(boxPreds, labelPreds) = model(image)
+	(startX, startY, endX, endY) = boxPreds[0]
+	# determine the class label with the largest predicted
+	# probability
+	labelPreds = torch.nn.Softmax(dim=-1)(labelPreds)
+	i = labelPreds.argmax(dim=-1).cpu()
+	label = le.inverse_transform(i)[0]
+
+First, the predictions from the model are obtained (Line 64). We proceed to unpack the bounding box values from the boxPreds
+variable (Line 65).
+
+A simple softmax function on the Label prediction will give us a better picture of the values corresponding to the classes. For that purpose, we use PyTorch’s own torch.nn.Softmax
+on Line 69. Isolating the index with argmax
+, we plug it in the Label encoder le
+and use inverse_transform
+(Index to value) to get the name of the label (Lines 69-71).
+→ Launch Jupyter Notebook on Google Colab
+Training an Ojbect Detector from scratch in PyTorch
+	# resize the original image such that it fits on our screen, and
+	# grab its dimensions
+	orig = imutils.resize(orig, width=600)
+	(h, w) = orig.shape[:2]
+	# scale the predicted bounding box coordinates based on the image
+	# dimensions
+	startX = int(startX * w)
+	startY = int(startY * h)
+	endX = int(endX * w)
+	endY = int(endY * h)
+	# draw the predicted bounding box and class label on the image
+	y = startY - 10 if startY - 10 > 10 else startY + 10
+	cv2.putText(orig, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX,
+		0.65, (0, 255, 0), 2)
+	cv2.rectangle(orig, (startX, startY), (endX, endY),
+		(0, 255, 0), 2)
+	# show the output image 
+	cv2.imshow("Output", orig)
+	cv2.waitKey(0)
+
+On Line 75, we have resized the original image to fit our screen. The height and width of the resized image are then stored, to scale the predicted bounding box values based on the image (Lines 76-83). This is done because we had scaled down the annotations to the range 0
+and 1
+before fitting them to the model. Hence, all outputs would have to be scaled up for display purposes.
+
+While displaying the bounding box, the label name will also be shown on top of it. For that purpose, we set up the y-axis value for our text on Line 86. Using OpenCV’s putText
+function, we set up the label displayed on the image (Lines 87 and 88).
+
+Finally, we use OpenCV’s rectangle
+method to create the bounding box on the image (Lines 89 and 90). Since we have the starting x-axis, starting y-axis, ending x-axis, and ending y-axis values, it’s very easy to create a rectangle from them. This rectangle will surround our object.
+
+This concludes our inference script. Let’s take a look at the results!
+Object Detection in Action
+
+Let’s see how our object detector fared, using one image from each class. We first use an image of an airplane (Figure 6), followed by an image under faces (Figure 7), and an image belonging to the motorcycle class (Figure 8).
+Figure 6: An airplane, correctly predicted as an airplane.
+Figure 7: A man, correctly categorized under face.
+Figure 8: A Harley, correctly predicted as a motorcycle.
+
+As it turns out, the accuracy values of our model weren’t lying. Not only did our model correctly guess the label, but the bounding boxes produced are also almost perfect!
+
+With such precise detection and results, we can all agree that our little project was a success, can’t we?
+
+What's next? I recommend PyImageSearch University.
+Course information:
+30+ total classes • 39h 44m video • Last updated: 12/2021
+★★★★★ 4.84 (128 Ratings) • 3,000+ Students Enrolled
+
+I strongly believe that if you had the right teacher you could master computer vision and deep learning.
+
+Do you think learning computer vision and deep learning has to be time-consuming, overwhelming, and complicated? Or has to involve complex mathematics and equations? Or requires a degree in computer science?
+
+That’s not the case.
+
+All you need to master computer vision and deep learning is for someone to explain things to you in simple, intuitive terms. And that’s exactly what I do. My mission is to change education and how complex Artificial Intelligence topics are taught.
+
+If you're serious about learning computer vision, your next stop should be PyImageSearch University, the most comprehensive computer vision, deep learning, and OpenCV course online today. Here you’ll learn how to successfully and confidently apply computer vision to your work, research, and projects. Join me in computer vision mastery.
+
+Inside PyImageSearch University you'll find:
+
+    ✓ 30+ courses on essential computer vision, deep learning, and OpenCV topics
+    ✓ 30+ Certificates of Completion
+    ✓ 39h 44m on-demand video
+    ✓ Brand new courses released every month, ensuring you can keep up with state-of-the-art techniques
+    ✓ Pre-configured Jupyter Notebooks in Google Colab
+    ✓ Run all code examples in your web browser — works on Windows, macOS, and Linux (no dev environment configuration required!)
+    ✓ Access to centralized code repos for all 500+ tutorials on PyImageSearch
+    ✓ Easy one-click downloads for code, datasets, pre-trained models, etc.
+    ✓ Access on mobile, laptop, desktop, etc.
+
+Click here to join PyImageSearch University
+
+Summary
+
+While writing this Object Detection tutorial, I realized a few things in retrospect.
+
+To be very honest, I had never liked using pre-trained models for my projects. It would feel that my work isn’t my work anymore. Obviously, that turned out to be a stupid notion, solidified with the fact that my first one-shot face classifier said that my best friend and I were the same people (believe me, we don’t look remotely similar).
+
+I would say this tutorial served as a beautiful example of what happens when you have a well-trained feature extractor. Not only did we save time, but the end results were also brilliant. Take Figures 6 and 8 as examples. The predicted bounding boxes have minimal error.
+
+Of course, this doesn’t mean there isn’t room for improvement. In Figure 7, the image has many elements, yet the object detector has managed to capture the general area of the object. However, it could have been more compact. We urge you to tinker around with the parameters to see if your results are better!
+
+That being said, Object Detection really plays a vital role in our world today. Automated Traffic, face detections, self-driving cars are just a few of the real-world applications where Object Detection thrives. Each year, algorithms are designed to make the process faster and more compact. We have reached a stage where algorithms can concurrently detect all objects inside scenes of a video! I hope this tutorial has piqued your curiosity toward uncovering the intricacies of this domain.
+
+To download the source code to this post (and be notified when future tutorials are published here on PyImageSearch), simply enter your email address in the form below!
+
+Download the Source Code and FREE 17-page Resource Guide
+
+Enter your email address below to get a .zip of the code and a FREE 17-page Resource Guide on Computer Vision, OpenCV, and Deep Learning. Inside you'll find my hand-picked tutorials, books, courses, and libraries to help you master CV and DL!
+
+About the Author
+
+Hey, I'm Devjyoti and I joined the ML bandwagon because it was too good to resist. Throughout my ML journey, I have been stuck many times while understanding concepts. I want to present those concepts to you in a way I wish they were presented to me, so the learning process becomes easier!
+Reader Interactions
+
+Previous Article:
+Automatically OCR’ing Receipts and Scans
+
+Next Article:
+OCR’ing Business Cards
+Comment section
+
+Hey, Adrian Rosebrock here, author and creator of PyImageSearch. While I love hearing from readers, a couple years ago I made the tough decision to no longer offer 1:1 help over blog post comments.
+
+At the time I was receiving 200+ emails per day and another 100+ blog post comments. I simply did not have the time to moderate and respond to them all, and the sheer volume of requests was taking a toll on me.
+
+Instead, my goal is to do the most good for the computer vision, deep learning, and OpenCV community at large by focusing my time on authoring high-quality blog posts, tutorials, and books/courses.
+
+If you need help learning computer vision and deep learning, I suggest you refer to my full catalog of books and courses — they have helped tens of thousands of developers, students, and researchers just like yourself learn Computer Vision, Deep Learning, and OpenCV.
+
+Click here to browse my full catalog.
+Primary Sidebar
+PyImageSearch University — NOW ENROLLING!
+
+You can master Computer Vision, Deep Learning, and OpenCV
+
+Course information:
+30+ total classes • 39h 44m video • Last updated: 12/2021
+★★★★★
+4.84 (128 Ratings) • 3,000+ Students Enrolled
+
+✓ 30+ courses on essential computer vision, deep learning, and OpenCV topics
+✓ 30+ Certificates of Completion
+✓ 39h 44m on-demand video
+✓ Brand new courses released every month, ensuring you can keep up with state-of-the-art techniques
+✓ Pre-configured Jupyter Notebooks in Google Colab
+✓ Run all code examples in your web browser — works on Windows, macOS, and Linux (no dev environment configuration required!)
+✓ Access to centralized code repos for all 500+ tutorials on PyImageSearch
+✓ Easy one-click downloads for code, datasets, pre-trained models, etc.
+✓ Access on mobile, laptop, desktop, etc.
+Join Now
+Picked For You
+Torch Hub Series #5: MiDaS — Model on Depth Estimation
+Torch Hub Series #4: PGAN — Model on GAN
+Torch Hub Series #3: YOLOv5 and SSD — Models on Object Detection
+Torch Hub Series #2: VGG and ResNet
+Torch Hub Series #1: Introduction to Torch Hub
+Similar articles
+Deep Learning
+Keras and TensorFlow
+Tutorials
+Breaking captchas with deep learning, Keras, and TensorFlow
+July 14, 2021
+
+Image Processing
+Tutorials
+How-To: Python Compare Two Images
+September 15, 2014
+
+Deep Learning
+Keras and TensorFlow
+OpenCV Tutorials
+Optical Character Recognition (OCR)
+Tutorials
+OpenCV Sudoku Solver and OCR
+August 10, 2020
+
+You can learn Computer Vision, Deep Learning, and OpenCV.
+
+Get your FREE 17 page Computer Vision, OpenCV, and Deep Learning Resource Guide PDF. Inside you’ll find our hand-picked tutorials, books, courses, and libraries to help you master CV and DL.
+Footer
+Topics
+
+    Deep Learning
+    Dlib Library
+    Embedded/IoT and Computer Vision
+    Face Applications
+    Image Processing
+    Interviews
+    Keras
+
+    Machine Learning and Computer Vision
+    Medical Computer Vision
+    Optical Character Recognition (OCR)
+    Object Detection
+    Object Tracking
+    OpenCV Tutorials
+    Raspberry Pi
+
+Books & Courses
+
+    FREE CV, DL, and OpenCV Crash Course
+    Practical Python and OpenCV
+    Deep Learning for Computer Vision with Python
+    PyImageSearch Gurus Course
+    Raspberry Pi for Computer Vision
+
+PyImageSearch
+
+    Get Started
+    OpenCV Install Guides
+    About
+    FAQ
+    Blog
+    Contact
+    Privacy Policy
+
+© 2022 PyImageSearch. All Rights Reserved.
