@@ -3801,3 +3801,381 @@ PyImageSearch
     Privacy Policy
 
 © 2022 PyImageSearch. All Rights Reserved.
+
+
+
+############
+
+Hi,
+
+I was really into skateboarding as a middle schooler. Every waking second I spent on my board.
+
+One day, I gave myself a pretty bad concussion. I was coasting along, and wham, out of nowhere, a big rock lodges underneath one of my wheels, my board abruptly halts, and I go flying.
+
+Luckily, my head broke the fall.
+Image
+I was out cold for a minute, but when I came to, I was disoriented. I didn’t know up from down or left from right. My brain needed a few minutes to reorient myself and figure out what was going on.
+
+When applying OCR, knowing your orientation is critical. If your image is rotated, then your OCR accuracy will suffer.
+
+Therefore, one way to improve OCR accuracy is to detect the text orientation and then correct for it:
+Image
+The big picture: If the text in your input image is rotated, your OCR accuracy will suffer. To improve OCR accuracy, you should first correct text orientation.
+
+How it works: Tesseract’s orientation and script detection (OSD) mode lets you do text orientation correction out of the box.
+
+Our thoughts: If you don’t have a way to deal with text orientation, you’ve got no chance of getting good OCR results. 
+
+Yes, but: There are ways to correct text orientation, including various applications of deep learning; however, few are easier and more integrated than Tesseract’s OSD.
+
+Stay smart: OSD won’t fix all your problems, but it will fix most of them when it comes to text orientation and OCR.
+
+Click here to learn how to use OSD to correct text orientation with Tesseract.
+
+PyImageSearch University
+This lesson is part of PyImageSearch University, our flagship program to help you master computer vision, deep learning, and OpenCV.  PyImageSearch University is updated each week with new lessons.
+
+Don’t know Python?  No problem, we’ve got you covered with a short and sweet Python course to get you going.
+
+Having problems with your local development environment or IDE?  Fortunately, our pre-configured Colab Notebooks mean you can run code the moment you join PyImageSearch University.  But, of course, you don’t want to be a sys-admin, so don’t waste time messing with your development environment.  
+
+You can find the current lesson under OCR 110 — Using Tesseract for Translation and Non-English Languages. The direct link can be found here.
+
+Want to master computer vision and deep learning?
+Do you think mastering computer vision and deep learning has to be time-consuming, overwhelming, and complicated? Or has to involve complex mathematics and equations? Or requires a degree in computer science?
+
+That’s not the case. All you need to master computer vision and deep learning is for someone to explain things to you in simple, intuitive terms. And that’s exactly what we do. Our mission is to change education and how complex Artificial Intelligence topics are taught.
+
+
+Skip to primary navigation
+Skip to main content
+Skip to primary sidebar
+Skip to footer
+PYIMAGESEARCH
+
+You can master Computer Vision, Deep Learning, and OpenCV - PyImageSearch
+OpenCV Install Guides
+About
+FAQ
+Contact
+Get Started
+Topics
+Deep Learning
+Dlib Library
+Embedded/IoT and Computer Vision
+Face Applications
+Image Processing
+Interviews
+Keras and TensorFlow
+Machine Learning and Computer Vision
+Medical Computer Vision
+Optical Character Recognition (OCR)
+Object Detection
+Object Tracking
+OpenCV Tutorials
+Raspberry Pi
+Books and Courses
+Student Success Stories
+Blog
+Search
+OPTICAL CHARACTER RECOGNITION (OCR) TUTORIALS
+
+Correcting Text Orientation with Tesseract and Python
+by Adrian Rosebrock on January 31, 2022
+
+Click here to download the source code to this post
+
+An essential component of any OCR system is image preprocessing — the higher the quality input image you present to the OCR engine, the better your OCR output will be. To be successful in OCR, you need to review arguably the most important pre-processing step: text orientation.
+
+
+To learn how to perform text orientation with Tesseract and Python, just keep reading.
+
+
+Looking for the source code to this post?
+JUMP RIGHT TO THE DOWNLOADS SECTION 
+Correcting Text Orientation with Tesseract and Python
+Text orientation refers to the rotation angle of a piece of text in an image. A given word, sentence, or paragraph will look like gibberish to an OCR engine if the text is significantly rotated. OCR engines are intelligent, but like humans, they are not trained to read upside-down!
+
+Therefore, a critical first step in preparing your image data for OCR is to detect text orientation (if any) and then correct the text orientation. From there, you can present the corrected image to your OCR engine (and ideally obtain higher OCR accuracy).
+
+Learning Objectives
+In this tutorial, you will learn:
+
+The concept of orientation and script detection (OSD)
+How to detect text script (i.e., writing system) with Tesseract
+How to detect text orientation using Tesseract
+How to automatically correct text orientation with OpenCV
+Configuring your development environment
+To follow this guide, you need to have the OpenCV library installed on your system.
+
+Luckily, OpenCV is pip-installable:
+
+ → Launch Jupyter Notebook on Google Colab
+Correcting Text Orientation with Tesseract and Python
+$ pip install opencv-contrib-python
+If you need help configuring your development environment for OpenCV, I highly recommend that you read my pip install OpenCV guide — it will have you up and running in a matter of minutes.
+
+Having problems configuring your development environment?
+
+Figure 1: Having trouble configuring your dev environment? Want access to pre-configured Jupyter Notebooks running on Google Colab? Be sure to join PyImageSearch University — you’ll be up and running with this tutorial in a matter of minutes.
+All that said, are you:
+
+Short on time?
+Learning on your employer’s administratively locked system?
+Wanting to skip the hassle of fighting with the command line, package managers, and virtual environments?
+Ready to run the code right now on your Windows, macOS, or Linux system?
+Then join PyImageSearch University today!
+
+Gain access to Jupyter Notebooks for this tutorial and other PyImageSearch guides that are pre-configured to run on Google Colab’s ecosystem right in your web browser! No installation required.
+
+And best of all, these Jupyter Notebooks will run on Windows, macOS, and Linux!
+
+What Is Orientation and Script Detection?
+Before we automatically detect and correct text orientation with Tesseract, we first need to discuss the concept of orientation and script detection (OSD). Tesseract has several different modes that you can use when automatically detecting and OCR’ing text. Some of these modes perform a full-blown OCR of the input image, while others output meta-data such as text information, orientation, etc. (i.e., your OSD modes). Tesseract’s OSD mode is going to give you two output values:
+
+Text orientation: The estimated rotation angle (in degrees) of the text in the input image.
+Script: The predicted “writing system” of the text in the image.
+Figure 2 shows an example of varying text orientations. When in OSD mode, Tesseract will detect these orientations and tell us how to correct the orientation.
+
+
+Figure 2. In OSD mode, Tesseract can detect text orientation and script type. From there, we can rotate the text back to 0° with OpenCV.
+A writing system is a visual method of communicating information, but unlike speech, a writing system also includes the concept of “storage” and “knowledge transfer.”
+
+When we put pen to paper, the characters we utilize are part of a script/writing system. These characters can be read by us and others, thereby imparting and transferring knowledge from the writer. Additionally, this knowledge is “stored” on the paper, meaning that if we were to die, the knowledge left on that paper could be imparted to others who could read our script/writing system.
+
+Figure 2 also provides examples of various scripts and writing systems, including Latin (the script used in English and other languages) and Abjad (the script for Hebrew amid other languages). When placed in OSD mode, Tesseract automatically detects the text’s writing system in the input image.
+
+If you’re new to the concept of scripts/writing systems, I would strongly recommend reading Wikipedia’s excellent article on the topic. It’s a great read which covers the history of writing systems and how they’ve evolved.
+
+Detecting and Correcting Text Orientation with Tesseract
+Now that we understand OSD’s basics, let’s move on to detecting and correcting text orientation with Tesseract. We’ll start with a quick review of our project directory structure. From there, I’ll show you how to implement text orientation correction. We’ll wrap up this tutorial with a discussion of our results.
+
+Project Structure
+Let’s dive into the directory structure for this project:
+
+ → Launch Jupyter Notebook on Google Colab
+Correcting Text Orientation with Tesseract and Python
+|-- images
+|   |-- normal.png
+|   |-- rotated_180.png
+|   |-- rotated_90_clockwise.png
+|   |-- rotated_90_counter_clockwise.png
+|   |-- rotated_90_counter_clockwise_hebrew.png
+|-- detect_orientation.py
+All the code to detect and correct text orientation is contained within the detect_orientation.py Python script and implemented in less than 35 lines of code, including comments. We’ll test the code using a selection of images/ included in the project folder.
+
+Implementing Our Text Orientation and Correction Script
+Let’s get started implementing our text orientation corrector with Tesseract and OpenCV.
+
+Open a new file, name it detect_orientation.py, and insert the following code:
+
+ → Launch Jupyter Notebook on Google Colab
+Correcting Text Orientation with Tesseract and Python
+# import the necessary packages
+from pytesseract import Output
+import pytesseract
+import argparse
+import imutils
+import cv2
+# construct the argument parser and parse the arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("-i", "--image", required=True,
+	help="path to input image to be OCR'd")
+args = vars(ap.parse_args())
+An import you might not recognize at first is PyTesseract’s Output class (https://github.com/madmaze/pytesseract). This class simply specifies four datatypes including DICT which we will take advantage of.
+
+Our lone command line argument is our input --image to be OCR’d. Let’s load the input now:
+
+ → Launch Jupyter Notebook on Google Colab
+Correcting Text Orientation with Tesseract and Python
+# load the input image, convert it from BGR to RGB channel ordering,
+# and use Tesseract to determine the text orientation
+image = cv2.imread(args["image"])
+rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+results = pytesseract.image_to_osd(rgb, output_type=Output.DICT)
+# display the orientation information
+print("[INFO] detected orientation: {}".format(
+	results["orientation"]))
+print("[INFO] rotate by {} degrees to correct".format(
+	results["rotate"]))
+print("[INFO] detected script: {}".format(results["script"]))
+Lines 16 and 17 load our input --image and swap color channels so that it is compatible with Tesseract.
+
+From there, we apply orientation and script detection (OSD) to the rgb image while specifying our output_type=Output.DICT (Line 18). We then display the orientation and script information in the terminal (contained in the results dictionary) including:
+
+The current orientation
+How many degrees to rotate the image to correct its orientation
+The type of script detected, such as Latin or Arabic
+Given this information, next, we’ll correct the text orientation:
+
+ → Launch Jupyter Notebook on Google Colab
+Correcting Text Orientation with Tesseract and Python
+# rotate the image to correct the orientation
+rotated = imutils.rotate_bound(image, angle=results["rotate"])
+# show the original image and output image after orientation
+# correction
+cv2.imshow("Original", image)
+cv2.imshow("Output", rotated)
+cv2.waitKey(0)
+Using my imutils rotate_bound method (http://pyimg.co/vebvn), we rotate the image ensuring that the entire image stays fully visible in the results (Line 28). Had we used OpenCV’s generic cv2.rotate method, the corners of the image would have been cut off. Finally, we display both the original and rotated images until a key is pressed (Lines 32-34).
+
+Text Orientation and Correction Results
+We are now ready to apply text OSD! Open a terminal and execute the following command:
+
+ → Launch Jupyter Notebook on Google Colab
+Correcting Text Orientation with Tesseract and Python
+$ python detect_orientation.py --image images/normal.png
+[INFO] detected orientation: 0
+[INFO] rotate by 0 degrees to correct
+[INFO] detected script: Latin
+Figure 3 displays the results of our script and orientation detection. Notice that the input image has not been rotated, implying the orientation is 0°. No rotation correction is required. The script is then detected as “Latin.”
+
+
+Figure 3. This screenshot from one of my autoencoder blog posts is already properly oriented. Thus, the input is the same as the output after correcting for text orientation with Tesseract.
+Let’s try another image, this one with rotated text:
+
+ → Launch Jupyter Notebook on Google Colab
+Correcting Text Orientation with Tesseract and Python
+$ python detect_orientation.py --image images/rotated_90_clockwise.png
+[INFO] detected orientation: 90
+[INFO] rotate by 270 degrees to correct
+[INFO] detected script: Latin
+Figure 4 shows the original input image, which contains rotated text. Using Tesseract in OSD mode, we can detect that the text in the input image has an orientation of 90° — we can correct this orientation by rotating the image 270° (i.e., −90°). And once again, the detected script is Latin.
+
+
+Figure 4. As you can see, the input is not oriented in the way that we read side-to-side. Tesseract and OSD detect that the image is rotated 90°. From there, we use OpenCV to rotate the image 90° to counteract and re-orient the image.
+We’ll wrap up this tutorial with one final example, this one of non-Latin text:
+
+ → Launch Jupyter Notebook on Google Colab
+Correcting Text Orientation with Tesseract and Python
+$ python detect_orientation.py \
+    --image images/rotated_90_counter_clockwise_hebrew.png
+[INFO] detected orientation: 270
+[INFO] rotate by 90 degrees to correct
+[INFO] detected script: Hebrew
+Figure 5 shows our input text image. We then detect the script (Hebrew) and correct its orientation by rotating the text 90°.
+
+
+Figure 5. Tesseract can detect that this Hebrew input image is rotated 270° with OSD. We use OpenCV to rotate the image by 90° to correct this orientation problem.
+As you can see, Tesseract makes text OSD easy!
+
+What's next? I recommend PyImageSearch University.
+
+Course information:
+30+ total classes • 39h 44m video • Last updated: 12/2021
+★★★★★ 4.84 (128 Ratings) • 3,000+ Students Enrolled
+I strongly believe that if you had the right teacher you could master computer vision and deep learning.
+
+Do you think learning computer vision and deep learning has to be time-consuming, overwhelming, and complicated? Or has to involve complex mathematics and equations? Or requires a degree in computer science?
+
+That’s not the case.
+
+All you need to master computer vision and deep learning is for someone to explain things to you in simple, intuitive terms. And that’s exactly what I do. My mission is to change education and how complex Artificial Intelligence topics are taught.
+
+If you're serious about learning computer vision, your next stop should be PyImageSearch University, the most comprehensive computer vision, deep learning, and OpenCV course online today. Here you’ll learn how to successfully and confidently apply computer vision to your work, research, and projects. Join me in computer vision mastery.
+
+Inside PyImageSearch University you'll find:
+
+✓ 30+ courses on essential computer vision, deep learning, and OpenCV topics
+✓ 30+ Certificates of Completion
+✓ 39h 44m on-demand video
+✓ Brand new courses released every month, ensuring you can keep up with state-of-the-art techniques
+✓ Pre-configured Jupyter Notebooks in Google Colab
+✓ Run all code examples in your web browser — works on Windows, macOS, and Linux (no dev environment configuration required!)
+✓ Access to centralized code repos for all 500+ tutorials on PyImageSearch
+✓ Easy one-click downloads for code, datasets, pre-trained models, etc.
+✓ Access on mobile, laptop, desktop, etc.
+CLICK HERE TO JOIN PYIMAGESEARCH UNIVERSITY
+
+Summary
+In this tutorial, you learned how to perform automatic text orientation detection and correction using Tesseract’s orientation and script detection (OSD) mode.
+
+The OSD mode provides us with meta-data of the text in the image, including both estimated text orientation and script/writing system detection. The text orientation refers to the angle (in degrees) of the text in the image. When performing OCR, we can obtain higher accuracy by correcting for the text orientation. Script detection, on the other hand, refers to the writing system of the text, which could be Latin, Hanzi, Arabic, Hebrew, etc.
+
+Want free GPU credits to train models?
+We used Jarvislabs.ai, a GPU cloud, for all the experiments.
+We are proud to offer PyImageSearch University students $20 worth of Jarvislabs.ai GPU cloud credits. Join PyImageSearch University and claim your $20 credit here.
+In Deep Learning, we need to train Neural Networks. These Neural Networks can be trained on a CPU but take a lot of time. Moreover, sometimes these networks do not even fit (run) on a CPU.
+
+To overcome this problem, we use GPUs. The problem is these GPUs are expensive and become outdated quickly.
+
+GPUs are great because they take your Neural Network and train it quickly. The problem is that GPUs are expensive, so you don’t want to buy one and use it only occasionally. Cloud GPUs let you use a GPU and only pay for the time you are running the GPU. It’s a brilliant idea that saves you money.
+
+JarvisLabs provides the best-in-class GPUs, and PyImageSearch University students get between 10 - 50 hours on a world-class GPU (time depends on the specific GPU you select).
+
+This gives you a chance to test-drive a monstrously powerful GPU on any of our tutorials in a jiffy. So join PyImageSearch University today and try for yourself.
+
+CLICK HERE TO GET JARVISLABS CREDITS NOW
+
+To download the source code to this post (and be notified when future tutorials are published here on PyImageSearch), simply enter your email address in the form below!
+
+
+Download the Source Code and FREE 17-page Resource Guide
+Enter your email address below to get a .zip of the code and a FREE 17-page Resource Guide on Computer Vision, OpenCV, and Deep Learning. Inside you'll find my hand-picked tutorials, books, courses, and libraries to help you master CV and DL!
+
+Your email address
+DOWNLOAD THE CODE!
+
+About the Author
+Hi there, I’m Adrian Rosebrock, PhD. All too often I see developers, students, and researchers wasting their time, studying the wrong things, and generally struggling to get started with Computer Vision, Deep Learning, and OpenCV. I created this website to show you what I believe is the best possible way to get your start.
+
+Reader Interactions
+Previous Article:
+
+Torch Hub Series #6: Image Segmentation
+Next Article:
+
+Correcting Text Orientation with Tesseract and Python
+Comment section
+Hey, Adrian Rosebrock here, author and creator of PyImageSearch. While I love hearing from readers, a couple years ago I made the tough decision to no longer offer 1:1 help over blog post comments.
+
+At the time I was receiving 200+ emails per day and another 100+ blog post comments. I simply did not have the time to moderate and respond to them all, and the sheer volume of requests was taking a toll on me.
+
+Instead, my goal is to do the most good for the computer vision, deep learning, and OpenCV community at large by focusing my time on authoring high-quality blog posts, tutorials, and books/courses.
+
+If you need help learning computer vision and deep learning, I suggest you refer to my full catalog of books and courses — they have helped tens of thousands of developers, students, and researchers just like yourself learn Computer Vision, Deep Learning, and OpenCV.
+
+Click here to browse my full catalog.
+
+Primary Sidebar
+PyImageSearch University — NOW ENROLLING!
+
+You can master Computer Vision, Deep Learning, and OpenCV
+
+Course information:
+30+ total classes • 39h 44m video • Last updated: 12/2021
+★★★★★
+4.84 (128 Ratings) • 3,000+ Students Enrolled
+
+✓ 30+ courses on essential computer vision, deep learning, and OpenCV topics
+✓ 30+ Certificates of Completion
+✓ 39h 44m on-demand video
+✓ Brand new courses released every month, ensuring you can keep up with state-of-the-art techniques
+✓ Pre-configured Jupyter Notebooks in Google Colab
+✓ Run all code examples in your web browser — works on Windows, macOS, and Linux (no dev environment configuration required!)
+✓ Access to centralized code repos for all 500+ tutorials on PyImageSearch
+✓ Easy one-click downloads for code, datasets, pre-trained models, etc.
+✓ Access on mobile, laptop, desktop, etc.
+
+JOIN NOW
+Picked For You
+
+OCR Passports with OpenCV and Tesseract
+
+Tesseract Page Segmentation Modes (PSMs) Explained: How to Improve Your OCR Accuracy
+
+OCR’ing Business Cards
+
+Automatically OCR’ing Receipts and Scans
+
+Using Machine Learning to Denoise Images for Better OCR Accuracy
+Similar articles
+TUTORIALS
+Basic motion detection and tracking with Python and OpenCV
+May 25, 2015
+DEEP LEARNINGDL4CV
+Setting up Ubuntu 16.04 + CUDA + GPU for deep learning with Python
+September 27, 2017
+OPTICAL CHARACTER RECOGNITION (OCR)TUTORIALS
+Tesseract Page Segmentation Modes (PSMs) Explained: How to Improve Your OCR Accuracy
+November 15, 2021
